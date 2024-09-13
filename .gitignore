@@ -34,12 +34,17 @@ render.experimental.xml
 .pub-cache/
 .pub/
 /build/
+local.properties
 
 # Symbolication related
 app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# Keystore files
+*.jks
+*.keystore
 
 # Android Studio will place build artifacts here
 /android/app/debug
@@ -60,3 +65,7 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Gradle files
+.gradle/
+build/
