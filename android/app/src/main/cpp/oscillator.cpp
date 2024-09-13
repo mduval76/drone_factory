@@ -6,7 +6,7 @@
 namespace DroneFactory {
     Oscillator::Oscillator(std::vector<float> wavetable, float sampleRate) : m_wavetable{std::move(wavetable)}, m_sampleRate{sampleRate} {}
 
-    float Oscillator::getSample() {
+    std::pair<float, float> Oscillator::getSample() {
         m_indexIncrement = m_frequency.load() * static_cast<float>(m_wavetable.size()) / static_cast<float>(m_sampleRate);
 
         swapWavetableIfNecessary();
@@ -17,7 +17,9 @@ namespace DroneFactory {
 
         m_index += m_indexIncrement;
 
-        return m_amplitude * sample;
+        float monoSample = m_amplitude * sample;
+
+        return std::make_pair(monoSample, monoSample);
     }
 
     void Oscillator::swapWavetableIfNecessary() {
@@ -60,12 +62,12 @@ namespace DroneFactory {
 
     A4Oscillator::A4Oscillator(float sampleRate) : m_phaseIncrement{2.f * PI * 440.f / sampleRate} {}
     
-    float A4Oscillator::getSample() {
+    std::pair<float, float> A4Oscillator::getSample() {
         const auto sample = 0.5f * std::sin(m_phase);
 
         m_phase = std::fmod(m_phase + m_phaseIncrement, 2.f * PI);
 
-        return sample;
+        return std::make_pair(sample, sample);
     }
 
     void A4Oscillator::onPlaybackStopped() {

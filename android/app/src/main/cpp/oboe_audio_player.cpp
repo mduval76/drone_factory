@@ -49,9 +49,18 @@ namespace DroneFactory {
         auto* floatData = reinterpret_cast<float*>(audioData);
 
         for (auto frame = 0; frame < numFrames; ++frame) {
-            const auto sample = m_source->getSample();
+            const auto [leftSample, rightSample] = m_source->getSample();
+            
             for (auto channel = 0; channel < channelCount; ++channel) {
-                floatData[frame * channelCount + channel] = sample;
+                if (channel == 0) {
+                    floatData[frame * channelCount + channel] = leftSample;
+                } 
+                else if (channel == 1) {
+                    floatData[frame * channelCount + channel] = rightSample;
+                } 
+                else {
+                    floatData[frame * channelCount + channel] = 0.0f;
+                }
             }
         }
         return oboe::DataCallbackResult::Continue;

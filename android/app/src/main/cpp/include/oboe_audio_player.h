@@ -8,7 +8,7 @@ namespace DroneFactory {
 
     class OboeAudioPlayer : public oboe::AudioStreamCallback, public AudioPlayer {
     public:
-        static constexpr auto channelCount = oboe::ChannelCount::Mono;
+        static constexpr auto channelCount = oboe::ChannelCount::Stereo;
 
         OboeAudioPlayer(std::shared_ptr<AudioSource> source, int sampleRate);
         ~OboeAudioPlayer();

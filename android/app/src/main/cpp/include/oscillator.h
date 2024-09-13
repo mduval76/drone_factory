@@ -11,7 +11,7 @@ namespace DroneFactory {
         Oscillator() = default;
         Oscillator(std::vector<float> wavetable, float sampleRate);
 
-        float getSample() override;
+        std::pair<float, float> getSample() override;
         void onPlaybackStopped() override;
 
         virtual void setFrequency(float newFrequency);
@@ -38,7 +38,7 @@ namespace DroneFactory {
     public:
         explicit A4Oscillator(float sampleRate);
 
-        float getSample() override;
+        std::pair<float, float> getSample() override;
         void onPlaybackStopped() override;
 
         void setFrequency(float newFrequency) override {};
