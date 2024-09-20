@@ -71,7 +71,7 @@ class MainActivity: FlutterActivity() {
                     }
                 }
                 "setWavetable" -> {
-                    val wavetable = call.argument<Int>("wavetable") ?: 0
+                    val wavetable = call.arguments as Int
                     CoroutineScope(Dispatchers.Main).launch {
                         try {
                             nativeSynthesizer.setWavetable(Wavetable.values()[wavetable])

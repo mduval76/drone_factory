@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 
 class NativeSynthesizer {
   static const _channel = MethodChannel('u9343789.drone_factory/synth_channel');
@@ -7,7 +8,7 @@ class NativeSynthesizer {
     try {
       await _channel.invokeMethod('play');
     } on PlatformException catch (e) {
-      print("Failed to play: '${e.message}'.");
+      debugPrint("Failed to play: '${e.message}'.");
     }
   }
   
@@ -15,7 +16,7 @@ class NativeSynthesizer {
     try {
       await _channel.invokeMethod('stop');
     } on PlatformException catch (e) {
-      print("Failed to stop: '${e.message}'.");
+      debugPrint("Failed to stop: '${e.message}'.");
     }
   }
 
@@ -24,7 +25,7 @@ class NativeSynthesizer {
       final bool isPlaying = await _channel.invokeMethod('isPlaying');
       return isPlaying;
     } on PlatformException catch (e) {
-      print("Failed to check if playing: '${e.message}'.");
+      debugPrint("Failed to check if playing: '${e.message}'.");
       return false;
     }
   }
@@ -33,7 +34,7 @@ class NativeSynthesizer {
     try {
       await _channel.invokeMethod('setVolume', volume);
     } on PlatformException catch (e) {
-      print("Failed to set volume: '${e.message}'.");
+      debugPrint("Failed to set volume: '${e.message}'.");
     }
   }
 
@@ -41,7 +42,7 @@ class NativeSynthesizer {
     try {
       await _channel.invokeMethod('setFrequency', frequency);
     } on PlatformException catch (e) {
-      print("Failed to set frequency: '${e.message}'.");
+      debugPrint("Failed to set frequency: '${e.message}'.");
     }
   }
 
@@ -49,7 +50,7 @@ class NativeSynthesizer {
     try {
       await _channel.invokeMethod('setWavetable', wavetable);
     } on PlatformException catch (e) {
-      print("Failed to set wavetable: '${e.message}'.");
+      debugPrint("Failed to set wavetable: '${e.message}'.");
     }
   }
 }
