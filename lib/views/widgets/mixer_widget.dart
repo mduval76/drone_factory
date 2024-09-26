@@ -17,11 +17,8 @@ class MixerWidget extends StatelessWidget {
     );
 
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: tracks,
-        ),
+      child: ListView(
+        children: tracks,
       ),
     );
   }

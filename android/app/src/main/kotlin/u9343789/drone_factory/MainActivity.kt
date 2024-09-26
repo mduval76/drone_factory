@@ -1,6 +1,7 @@
 package u9343789.drone_factory
 
 import android.os.Bundle
+import android.util.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope

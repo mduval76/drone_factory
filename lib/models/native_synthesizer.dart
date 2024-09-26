@@ -40,7 +40,7 @@ class NativeSynthesizer {
 
   Future<void> setFrequency(double frequency) async {
     try {
-      await _channel.invokeMethod('setFrequency', frequency);
+      await _channel.invokeMethod('setFrequency', {"frequency": frequency});
     } on PlatformException catch (e) {
       debugPrint("Failed to set frequency: '${e.message}'.");
     }

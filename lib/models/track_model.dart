@@ -35,6 +35,10 @@ class _TrackModelState extends State<TrackModel> {
     });
   }
 
+  void _setFrequency(double frequency) async {
+    await _synthesizer.setFrequency(frequency);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -57,7 +61,10 @@ class _TrackModelState extends State<TrackModel> {
       child: ExpansionTile(
         tilePadding: const EdgeInsets.all(0),
         title: Text('Track ${widget.id + 1}', style: const TextStyle(color: Colors.white)),
-        subtitle: Text('${_wavetable.toString().split('.').last} - ${_frequency.toStringAsFixed(2)} Hz', style: const TextStyle(color: Colors.white)),
+        subtitle: Text(
+          '${_wavetable.toString().split('.').last} - ${_frequency.toStringAsFixed(2)} Hz', 
+          style: const TextStyle(color: Colors.white)
+        ),
         children: [
           const Divider(thickness: 1, color: Colors.grey),
           _buildWavetableSelector(),
@@ -67,11 +74,6 @@ class _TrackModelState extends State<TrackModel> {
           _buildVolumeControl(),
           const Divider(thickness: 1, color: Colors.grey),
         ],
-        // onExpansionChanged: (expanded) {
-        //   setState(() {
-        //     _isExpanded = expanded;
-        //   });
-        // },
       ),
     );
   }
@@ -135,69 +137,46 @@ class _TrackModelState extends State<TrackModel> {
   }
 
   Widget _buildFrequencyControl() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Slider(
-              min: 20,
-              max: 20000,
-              value: _frequency,
-              onChanged: (value) {
-                setState(() {
-                  _frequency = value;
-                });
-                // TODO: Implement frequency change in audio engine
-              },
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: TextField(
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(vertical: 8.0),
-                border: OutlineInputBorder(),
-                labelText: 'Hz',
-              ),
-              controller: TextEditingController(text: _frequency.toStringAsFixed(2)),
-              onSubmitted: (value) {
-                double? frequency = double.tryParse(value);
-                if (frequency != null && frequency >= 20 && frequency <= 20000) {
-                  setState(() {
-                    _frequency = frequency;
-                  });
-                  // TODO: Implement frequency change in audio engine
-                }
-              },
-            ),
-          ),
-        ],
-      ),
+    return SizedBox(
+      height: 25,
+      child: SliderTheme(
+        data: const SliderThemeData(
+          trackHeight: 25,
+          trackShape: RectangularSliderTrackShape(),
+          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0)
+        ),
+        child: Slider(
+          min: 20,
+          max: 20000,
+          value: _frequency,
+          onChanged: (value) {
+            setState(() {
+              _frequency = value;
+              _setFrequency(_frequency);
+            });
+            // TODO: Implement frequency change in audio engine
+          },
+        ),
+      )
     );
+    
+    
+    
   }
 
   Widget _buildVolumeControl() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Slider(
-              min: 0,
-              max: 1,
-              value: _volume,
-              onChanged: (value) {
-                setState(() {
-                  _volume = value;
-                });
-                // TODO: Implement volume change in audio engine
-              },
-            ),
-          ),
-        ],
+      child: Slider(
+        min: 0,
+        max: 1,
+        value: _volume,
+        onChanged: (value) {
+          setState(() {
+            _volume = value;
+          });
+          // TODO: Implement volume change in audio engine
+        },
       ),
     );
   }
