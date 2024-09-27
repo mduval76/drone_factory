@@ -1,20 +1,32 @@
 #include <utility>
 
 #include "oboe_audio_player.h"
+#include "log.h"
 #include "audio_source.h"
 
 using namespace oboe;
 
 namespace DroneFactory {
+#ifndef NDEBUG
+static std::atomic<int> instances{0};
+#endif
 
     OboeAudioPlayer::OboeAudioPlayer(std::shared_ptr<AudioSource> source, int sampleRate)
-        : m_source(std::move(source)), m_sampleRate(sampleRate) {}
+        : m_source(std::move(source)), m_sampleRate(sampleRate) {
+#ifndef NDEBUG
+        LOGD("OboeAudioPlayer created. Instances count: %d", ++instances);
+#endif
+        }
 
     OboeAudioPlayer::~OboeAudioPlayer() {
+#ifndef NDEBUG
+        LOGD("OboeAudioPlayer destroyed. Instances count: %d", --instances);
+#endif
         OboeAudioPlayer::stop();
     }
 
     int32_t OboeAudioPlayer::play() {
+        LOGD("OboeAudioPlayer::play()");
         AudioStreamBuilder builder;
         const auto result =
             builder.setPerformanceMode(PerformanceMode::LowLatency)
@@ -37,6 +49,7 @@ namespace DroneFactory {
     }
 
     void OboeAudioPlayer::stop() {
+        LOGD("OboeAudioPlayer::stop()");
         if (m_stream) {
             m_stream->stop();
             m_stream->close();

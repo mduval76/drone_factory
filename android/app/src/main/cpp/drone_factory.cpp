@@ -1,4 +1,5 @@
 #include <jni.h>
+#include "log.h"
 #include <memory>
 
 #include "synthesizer.h"
@@ -11,6 +12,7 @@ extern "C" {
         auto synthesizer = std::make_unique<DroneFactory::Synthesizer>();
 
         if (not synthesizer) {
+            LOGD("Failed to create the synthesizer.");
             synthesizer.reset(nullptr);
         }
 
@@ -22,6 +24,7 @@ extern "C" {
         auto* synthesizer = reinterpret_cast<DroneFactory::Synthesizer*>(synthesizerHandle);
 
         if (not synthesizer) {
+            LOGD("Attempt to destroy an unitialized synthesizer.");
             return;
         }
 
@@ -36,7 +39,10 @@ extern "C" {
             synthesizer->play();
         }
         else {
-            return;
+            LOGD(
+                "Synthesizer not created. Please, create the synthesizer first by "
+                "calling create()."
+            );
         }
     }
 
@@ -48,7 +54,10 @@ extern "C" {
             synthesizer->stop();
         }
         else {
-            return;
+            LOGD(
+                "Synthesizer not created. Please, create the synthesizer first by "
+                "calling create()."
+            );
         }
     }
 
@@ -57,6 +66,10 @@ extern "C" {
         auto* synthesizer = reinterpret_cast<DroneFactory::Synthesizer*>(synthesizerHandle);
 
         if (not synthesizer) {
+            LOGD(
+                "Synthesizer not created. Please, create the synthesizer first by "
+                "calling create()."
+            );
             return false;
         }
         
@@ -72,7 +85,10 @@ extern "C" {
             synthesizer->setFrequency(nativeFrequency);
         }
         else {
-            return;
+            LOGD(
+                "Synthesizer not created. Please, create the synthesizer first by "
+                "calling create()."
+            );
         }
     }
 
@@ -85,7 +101,10 @@ extern "C" {
             synthesizer->setVolume(nativeVolume);
         }
         else {
-            return;
+            LOGD(
+                "Synthesizer not created. Please, create the synthesizer first by "
+                "calling create()."
+            );
         }
     }
 
@@ -98,7 +117,10 @@ extern "C" {
             synthesizer->setWavetable(nativeWavetable);
         }
         else {
-            return;
+            LOGD(
+                "Synthesizer not created. Please, create the synthesizer first by "
+                "calling create()."
+            );
         }
     }
 }

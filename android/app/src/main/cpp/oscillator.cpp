@@ -1,10 +1,11 @@
 #include <cmath>
-#include <android/log.h> // Include the appropriate header file for LOGD macro
+#include "log.h"
 #include "oscillator.h"
 #include "constants.h"
 
 namespace DroneFactory {
-    Oscillator::Oscillator(std::vector<float> wavetable, float sampleRate) : m_wavetable{std::move(wavetable)}, m_sampleRate{sampleRate} {}
+    Oscillator::Oscillator(std::vector<float> wavetable, float sampleRate)
+     : m_wavetable{std::move(wavetable)}, m_sampleRate{sampleRate} {}
 
     std::pair<float, float> Oscillator::getSample() {
         m_indexIncrement = m_frequency.load() * static_cast<float>(m_wavetable.size()) / static_cast<float>(m_sampleRate);
@@ -16,7 +17,7 @@ namespace DroneFactory {
         const auto sample = interpolateLinearly();
 
         m_index += m_indexIncrement;
-
+        //LOGD("OSCILLATOR: m_index = %.2f, m_indexIncrement = %.5f", m_index, m_indexIncrement.load());
         float monoSample = m_amplitude * sample;
 
         return std::make_pair(monoSample, monoSample);
@@ -37,10 +38,13 @@ namespace DroneFactory {
     }
 
     void Oscillator::setFrequency(float newFrequency) {
+        LOGD("OSCILLATOR: setFrequencycalled and set to %.2f Hz.", newFrequency);
+        m_frequency.store(newFrequency); 
         m_indexIncrement = newFrequency * static_cast<float>(m_wavetable.size()) / static_cast<float>(m_sampleRate);
     }
 
     void Oscillator::setAmplitude(float newAmplitude) {
+        LOGD("OSCILLATOR: setAmplitude called and set to %.2f Hz.", newAmplitude);
         m_amplitude.store(newAmplitude);
     }
 

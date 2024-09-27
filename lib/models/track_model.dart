@@ -39,6 +39,10 @@ class _TrackModelState extends State<TrackModel> {
     await _synthesizer.setFrequency(frequency);
   }
 
+    void _setVolume(double volume) async {
+    await _synthesizer.setVolume(volume);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -147,14 +151,13 @@ class _TrackModelState extends State<TrackModel> {
         ),
         child: Slider(
           min: 20,
-          max: 20000,
+          max: 2000,
           value: _frequency,
           onChanged: (value) {
             setState(() {
               _frequency = value;
               _setFrequency(_frequency);
             });
-            // TODO: Implement frequency change in audio engine
           },
         ),
       )
@@ -174,8 +177,8 @@ class _TrackModelState extends State<TrackModel> {
         onChanged: (value) {
           setState(() {
             _volume = value;
+            _setVolume(_volume);
           });
-          // TODO: Implement volume change in audio engine
         },
       ),
     );

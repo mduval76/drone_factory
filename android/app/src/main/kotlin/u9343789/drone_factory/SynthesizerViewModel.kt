@@ -15,19 +15,19 @@ class SynthesizerViewModel : ViewModel() {
             applyParameters()
         }
 
-    private val _frequency = MutableLiveData(20f)
+    private val _frequency = MutableLiveData(440f)
     val frequency: LiveData<Float>
         get() {
             return _frequency
         }
-    private val frequencyRange = 20f..20000f
+    private val frequencyRange = 20f..2000f
     
     private val _volume = MutableLiveData(-24f)
     val volume: LiveData<Float>
         get() {
             return _volume
         }
-    val volumeRange = (-60f)..0f
+        val volumeRange = (-60f)..0f
     
     private var wavetable = Wavetable.SINE
 
@@ -147,6 +147,4 @@ class SynthesizerViewModel : ViewModel() {
             }
         }
     }
-
-    // TODO: Add companion object for the conversion functions
 }
