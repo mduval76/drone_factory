@@ -10,16 +10,19 @@ class MixerWidget extends StatelessWidget {
       8,
       (index) => TrackModel(
         id: index,
-        volume: 0.5,
+        volume: 1.0,
         frequency: 440.0,
         wavetable: Wavetable.sine,
       ),
     );
 
     return Expanded(
-      child: ListView(
-        children: tracks,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ListView(
+          children: tracks,
+        ),
       ),
-    );
+      );
   }
 }

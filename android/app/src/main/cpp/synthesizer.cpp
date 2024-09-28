@@ -47,6 +47,7 @@ namespace DroneFactory {
     void Synthesizer::setVolume(float volumeInDb) {
         LOGD("SYNTHESIZER: Volume set to %.2f dB.", volumeInDb);
         const auto amplitude = dBToAmplitude(volumeInDb);
+        LOGD("SYNTHESIZER: Amplitude set to %.2f.", amplitude);
         m_oscillator->setAmplitude(amplitude);
     }
 

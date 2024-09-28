@@ -61,10 +61,12 @@ class MainActivity: FlutterActivity() {
                     }
                 }
                 "setVolume" -> {
-                    val volume = call.argument<Double>("volume")?.toFloat() ?: 0f
+                    val volume = call.argument<Double>("volume")?.toFloat() ?: -30f
+                    val volumeInDb = volume * 60 - 60
+                    Log.d("Synth", "Setting volume to $volume")
                     CoroutineScope(Dispatchers.Main).launch {
                         try {
-                            nativeSynthesizer.setVolume(volume)
+                            nativeSynthesizer.setVolume(volumeInDb)
                             result.success(null)
                         } catch (e: Exception) {
                             result.error("ERROR", "Failed to set volume", e.localizedMessage)

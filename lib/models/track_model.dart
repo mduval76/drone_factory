@@ -103,11 +103,8 @@ class _TrackModelState extends State<TrackModel> {
               assetName = 'assets/icons/sawtooth.svg';
               break;
           }
-          return Padding(
-            padding: const EdgeInsets.only(
-              left: 22.5,
-            ),
-            child: Container(
+          return Container(
+              padding: const EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border(
@@ -116,24 +113,24 @@ class _TrackModelState extends State<TrackModel> {
                       : BorderSide.none,
                 ),
               ),
-              child:Transform.scale(
-              scale: 6,
-              child: IconButton(
-                icon: SvgPicture.asset(
-                  assetName,
-                  height: 25,
-                  width: 25,
-                  color: _wavetable == wavetable ? Colors.blue : Colors.white,
+              child: Transform.scale(
+                scale: 5,
+                child: IconButton(
+                  icon: SvgPicture.asset(
+                    assetName,
+                    height: 25,
+                    width: 25,
+                    color: _wavetable == wavetable ? Colors.blue : Colors.white,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _wavetable = wavetable;
+                      _changeWavetable(wavetable.index);
+                    });
+                  },
                 ),
-                onPressed: () {
-                  setState(() {
-                    _wavetable = wavetable;
-                    _changeWavetable(wavetable.index);
-                  });
-                },
               ),
-            ),
-            ),
+            
           );
         }).toList(),
       ),
@@ -144,10 +141,13 @@ class _TrackModelState extends State<TrackModel> {
     return SizedBox(
       height: 25,
       child: SliderTheme(
-        data: const SliderThemeData(
+         data: const SliderThemeData(
           trackHeight: 25,
+          activeTrackColor: Colors.white,
+          inactiveTrackColor: Colors.grey,
+          thumbColor: Colors.white,
+          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.5),
           trackShape: RectangularSliderTrackShape(),
-          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0)
         ),
         child: Slider(
           min: 20,
@@ -162,25 +162,32 @@ class _TrackModelState extends State<TrackModel> {
         ),
       )
     );
-    
-    
-    
   }
 
   Widget _buildVolumeControl() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Slider(
-        min: 0,
-        max: 1,
-        value: _volume,
-        onChanged: (value) {
-          setState(() {
-            _volume = value;
-            _setVolume(_volume);
-          });
-        },
-      ),
+    return SizedBox(
+      height: 25,
+      child: SliderTheme(
+        data: const SliderThemeData(
+          trackHeight: 25,
+          activeTrackColor: Colors.white,
+          inactiveTrackColor: Colors.grey,
+          thumbColor: Colors.white,
+          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.5),
+          trackShape: RectangularSliderTrackShape(),
+        ),
+        child: Slider(
+          min: 0,
+          max: 1,
+          value: _volume,
+          onChanged: (value) {
+            setState(() {
+              _volume = value;
+              _setVolume(_volume);
+            });
+          },
+        ),
+      )
     );
   }
 }

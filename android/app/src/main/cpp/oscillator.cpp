@@ -44,7 +44,7 @@ namespace DroneFactory {
     }
 
     void Oscillator::setAmplitude(float newAmplitude) {
-        LOGD("OSCILLATOR: setAmplitude called and set to %.2f Hz.", newAmplitude);
+        LOGD("OSCILLATOR: setAmplitude called and set to %.2f db.", newAmplitude);
         m_amplitude.store(newAmplitude);
     }
 

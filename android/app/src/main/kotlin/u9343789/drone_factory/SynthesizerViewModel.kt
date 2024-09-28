@@ -22,12 +22,12 @@ class SynthesizerViewModel : ViewModel() {
         }
     private val frequencyRange = 20f..2000f
     
-    private val _volume = MutableLiveData(-24f)
+    private val _volume = MutableLiveData(0f)
     val volume: LiveData<Float>
         get() {
             return _volume
         }
-        val volumeRange = (-60f)..0f
+    val volumeRange = (-60f)..0f
     
     private var wavetable = Wavetable.SINE
 
@@ -40,8 +40,9 @@ class SynthesizerViewModel : ViewModel() {
             synthesizer?.setFrequency(frequencyInHz)
         }
     }
-    
-    fun setVolume(volumeInDb: Float) {
+
+    fun setVolumeSliderPosition(volumeSliderPosition: Float) {
+        val volumeInDb = volumeInDbFromSliderPosition(volumeSliderPosition)
         _volume.value = volumeInDb
 
         // Coroutine
@@ -49,6 +50,15 @@ class SynthesizerViewModel : ViewModel() {
             synthesizer?.setVolume(volumeInDb)
         }
     }
+    
+    // fun setVolume(volumeInDb: Float) {
+    //     _volume.value = volumeInDb
+
+    //     // Coroutine
+    //     viewModelScope.launch {
+    //         synthesizer?.setVolume(volumeInDb)
+    //     }
+    // }
 
     fun setWavetable(newWavetable: Wavetable) {
         wavetable = newWavetable
@@ -77,9 +87,19 @@ class SynthesizerViewModel : ViewModel() {
         return valueFromRangePosition(frequencyRange, rangePosition)
     }
     
-      fun sliderPositionFromFrequencyInHz(frequencyInHz: Float): Float {
+    fun sliderPositionFromFrequencyInHz(frequencyInHz: Float): Float {
         val rangePosition = rangePositionFromValue(frequencyRange, frequencyInHz)
         return exponentialToLinear(rangePosition)
+    }
+
+    private fun volumeInDbFromSliderPosition(sliderPosition: Float): Float {
+        val rangePosition = linearToExponential(sliderPosition)
+        return valueFromRangePosition(volumeRange, sliderPosition)
+    }
+
+    fun sliderPositionFromVolumeInDb(volumeInDb: Float): Float {
+        val rangePosition = rangePositionFromValue(volumeRange, volumeInDb)
+        return rangePositionFromValue(volumeRange, volumeInDb)
     }
 
     companion object LinearToExponentialConverter {
@@ -130,7 +150,7 @@ class SynthesizerViewModel : ViewModel() {
     fun applyParameters() {
         viewModelScope.launch {
             synthesizer?.setFrequency(frequency.value!!)
-            synthesizer?.setVolume(volume.value!!)
+            synthesizer?.setVolume(volume.value ?: 0f)
             synthesizer?.setWavetable(wavetable)
             updatePlayButtonLabel()
         }

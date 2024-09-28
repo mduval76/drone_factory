@@ -32,7 +32,7 @@ class NativeSynthesizer {
 
   Future<void> setVolume(double volume) async {
     try {
-      await _channel.invokeMethod('setVolume', volume);
+      await _channel.invokeMethod('setVolume', {"volume": volume});
     } on PlatformException catch (e) {
       debugPrint("Failed to set volume: '${e.message}'.");
     }
