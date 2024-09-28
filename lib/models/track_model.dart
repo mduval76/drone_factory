@@ -63,12 +63,20 @@ class _TrackModelState extends State<TrackModel> {
         ),
       ),
       child: ExpansionTile(
-        tilePadding: const EdgeInsets.all(0),
-        title: Text('Track ${widget.id + 1}', style: const TextStyle(color: Colors.white)),
-        subtitle: Text(
-          '${_wavetable.toString().split('.').last} - ${_frequency.toStringAsFixed(2)} Hz', 
-          style: const TextStyle(color: Colors.white)
+        tilePadding: const EdgeInsets.only(left: 10),
+        title: Text(
+          '${widget.id + 1}', 
+          style: const TextStyle(
+            color: Colors.white,
+            fontFamily: 'QuicksandRegular',
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          )
         ),
+        // subtitle: Text(
+        //   '${_wavetable.toString().split('.').last} - ${_frequency.toStringAsFixed(2)} Hz', 
+        //   style: const TextStyle(color: Colors.white)
+        // ),
         children: [
           const Divider(thickness: 1, color: Colors.grey),
           _buildWavetableSelector(),

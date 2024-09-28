@@ -26,5 +26,8 @@ flutter:
       - family: CocomatLight
         fonts:
           - asset: assets/fonts/CocomatLight-ZXY3.ttf
+      - family: QuicksandRegular
+        fonts:
+          - asset: assets/fonts/Quicksand-Regular.ttf
           
   uses-material-design: true
