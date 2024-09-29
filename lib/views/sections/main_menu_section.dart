@@ -27,7 +27,6 @@ class _MainMenuSectionState extends State<MainMenuSection> {
 @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 1,
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
