@@ -57,8 +57,8 @@ namespace {
 
         for (auto k = 1; k <= HARMONICS_COUNT; ++k) {
             for (auto j = 0; j < WAVETABLE_LENGTH; ++j) {
-            const auto phase = 2.f * PI * 1.f * j / WAVETABLE_LENGTH;
-            sawtoothWavetable[j] += 2.f / PI * std::pow(-1.f, k) * std::pow(k, -1.f) * std::sin(k * phase);
+                const auto phase = 2.f * PI * 1.f * j / WAVETABLE_LENGTH;
+                sawtoothWavetable[j] += 2.f / PI * std::pow(-1.f, k) * std::pow(k, -1.f) * std::sin(k * phase);
             }
         }
 

@@ -70,7 +70,6 @@ class NativeSynthesizer : Synthesizer {
             return
         }
 
-        // Create the native synthesizer handle
         synthesizerHandle = create()
     }
 }

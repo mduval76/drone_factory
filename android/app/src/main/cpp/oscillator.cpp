@@ -38,13 +38,13 @@ namespace DroneFactory {
     }
 
     void Oscillator::setFrequency(float newFrequency) {
-        LOGD("OSCILLATOR: setFrequencycalled and set to %.2f Hz.", newFrequency);
+        // LOGD("OSCILLATOR: setFrequencycalled and set to %.2f Hz.", newFrequency);
         m_frequency.store(newFrequency); 
         m_indexIncrement = newFrequency * static_cast<float>(m_wavetable.size()) / static_cast<float>(m_sampleRate);
     }
 
     void Oscillator::setAmplitude(float newAmplitude) {
-        LOGD("OSCILLATOR: setAmplitude called and set to %.2f db.", newAmplitude);
+        // LOGD("OSCILLATOR: setAmplitude called and set to %.2f db.", newAmplitude);
         m_amplitude.store(newAmplitude);
     }
 

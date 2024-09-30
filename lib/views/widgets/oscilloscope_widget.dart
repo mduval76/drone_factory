@@ -11,9 +11,7 @@ class _OscilloscopeWidgetState extends State<OscilloscopeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
-      flex: 8,
-      child: Text(
+    return const Text(
         'Oscilloscope',
         style: TextStyle(
           color: Colors.lightGreen,
@@ -21,7 +19,6 @@ class _OscilloscopeWidgetState extends State<OscilloscopeWidget> {
           fontFamily: 'CocomatLight',
           fontWeight: FontWeight.bold
         ),
-      ),
-    );  
+      );
   }
 }

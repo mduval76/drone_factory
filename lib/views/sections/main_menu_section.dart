@@ -26,45 +26,43 @@ class _MainMenuSectionState extends State<MainMenuSection> {
 
 @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          border: Border.all(
-            color: const Color.fromARGB(255, 255, 4, 192),
-            width: 2,
-          ),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.black,
+        border: Border.all(
+          color: const Color.fromARGB(255, 255, 4, 192),
+          width: 2,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                border: Border.all(
-                  color: const Color.fromARGB(255, 255, 4, 192),
-                  width: 1,
-                ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              border: Border.all(
+                color: const Color.fromARGB(255, 255, 4, 192),
+                width: 1,
               ),
-              child: ElevatedButton(
-                onPressed: _togglePlayPause,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  padding: EdgeInsets.zero,
-                ),
-                child: Center(
-                  child: Icon(
-                    isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: const Color.fromARGB(255, 255, 4, 192),
-                  ),
+            ),
+            child: ElevatedButton(
+              onPressed: _togglePlayPause,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                padding: EdgeInsets.zero,
+              ),
+              child: Center(
+                child: Icon(
+                  isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: const Color.fromARGB(255, 255, 4, 192),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

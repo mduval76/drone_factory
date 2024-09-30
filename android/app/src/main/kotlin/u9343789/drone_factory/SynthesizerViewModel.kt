@@ -93,7 +93,7 @@ class SynthesizerViewModel : ViewModel() {
     }
 
     private fun volumeInDbFromSliderPosition(sliderPosition: Float): Float {
-        val rangePosition = linearToExponential(sliderPosition)
+        val rangePosition = sliderPosition
         return valueFromRangePosition(volumeRange, sliderPosition)
     }
 
