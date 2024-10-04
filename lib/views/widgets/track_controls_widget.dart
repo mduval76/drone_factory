@@ -23,7 +23,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
   late double _frequency;
   late Wavetable _wavetable;
 
-  void _changeWavetable(int wavetable) async {
+  void _setWavetable(int wavetable) async {
     await _synthesizer.setWavetable(widget.selectedTrack.trackId, _wavetable.index);
 
     setState(() {
@@ -58,6 +58,18 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
     _volume = widget.selectedTrack.volume;
     _frequency = widget.selectedTrack.frequency;
     _wavetable = widget.selectedTrack.wavetable;
+  }
+
+  @override
+  void didUpdateWidget(covariant TrackControlsWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedTrack != widget.selectedTrack) {
+      setState(() {
+        _volume = widget.selectedTrack.volume;
+        _frequency = widget.selectedTrack.frequency;
+        _wavetable = widget.selectedTrack.wavetable;
+      });
+    }
   }
   
   @override
@@ -171,7 +183,8 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                   onPressed: () {
                     setState(() {
                       _wavetable = wavetable;
-                      _changeWavetable(wavetable.index);
+                      widget.selectedTrack.wavetable = wavetable;
+                      _setWavetable(wavetable.index);
                     });
                   },
                 ),
@@ -220,6 +233,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                   onChanged: (value) {
                     setState(() {
                       _frequency = value;
+                      widget.selectedTrack.frequency = value;
                       _setFrequency(_frequency);
                     });
                   },
@@ -270,6 +284,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                 onChanged: (value) {
                   setState(() {
                     _volume = value;
+                    widget.selectedTrack.volume = value;
                     _setVolume(_volume);
                   });
                 },
