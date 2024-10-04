@@ -6,6 +6,7 @@ add_library(
     drone_factory
     SHARED 
     drone_factory.cpp
+    audio_track.cpp
     synthesizer.cpp
     oscillator.cpp
     wavetable_factory.cpp

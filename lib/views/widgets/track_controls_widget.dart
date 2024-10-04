@@ -3,87 +3,142 @@ import 'package:drone_factory/models/track_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class TrackWidget extends StatefulWidget {
-  final TrackModel trackModel;
+class TrackControlsWidget extends StatefulWidget {
+  final TrackModel selectedTrack;
+  final Color borderColor;
 
-  const TrackWidget({super.key, required this.trackModel});
+  const TrackControlsWidget({
+    super.key, 
+    required this.selectedTrack, 
+    required this.borderColor
+  });
 
   @override
-  State<TrackWidget> createState() => _TrackModelState();
+  State<TrackControlsWidget> createState() => _TrackControlsWidgetState();
 }
 
-class _TrackModelState extends State<TrackWidget> {
+class _TrackControlsWidgetState extends State<TrackControlsWidget> {
   final NativeSynthesizer _synthesizer = NativeSynthesizer(); 
   late double _volume;
   late double _frequency;
   late Wavetable _wavetable;
-  //bool _isExpanded = false;
 
-  void _changeWavetable(int wavetable) async {
-    await _synthesizer.setWavetable(_wavetable.index);
+  void _setWavetable(int wavetable) async {
+    await _synthesizer.setWavetable(widget.selectedTrack.trackId, _wavetable.index);
 
     setState(() {
       _wavetable = Wavetable.values[wavetable];
     });
   }
 
-  void _setFrequency(double frequency) async {
-    await _synthesizer.setFrequency(frequency);
+  String _getWavetableString(Wavetable wavetable) {
+    switch (wavetable) {
+      case Wavetable.sine:
+        return 'SINE';
+      case Wavetable.triangle:
+        return 'TRIANGLE';
+      case Wavetable.square:
+        return 'SQUARE';
+      case Wavetable.sawtooth:
+        return 'SAWTOOTH';
+    }
   }
 
-    void _setVolume(double volume) async {
-    await _synthesizer.setVolume(volume);
+  void _setFrequency(double frequency) async {
+    await _synthesizer.setFrequency(widget.selectedTrack.trackId, frequency);
+  }
+
+  void _setVolume(double volume) async {
+    await _synthesizer.setVolume(widget.selectedTrack.trackId, volume);
   }
 
   @override
   void initState() {
     super.initState();
-    _volume = widget.trackModel.volume;
-    _frequency = widget.trackModel.frequency;
-    _wavetable = widget.trackModel.wavetable;
+    _volume = widget.selectedTrack.volume;
+    _frequency = widget.selectedTrack.frequency;
+    _wavetable = widget.selectedTrack.wavetable;
   }
 
   @override
-Widget build(BuildContext context) {
-  return Container(
-    width: double.infinity,
-    decoration: BoxDecoration(
-      color: Colors.black,
-      border: Border.all(
-        color: const Color.fromARGB(255, 255, 4, 192),
-        width: 1,
-      ),
-    ),
-    child: ExpansionTileTheme(
-      data: const ExpansionTileThemeData(
-        iconColor: Colors.white,
-        textColor: Colors.white,
-        backgroundColor: Colors.black,
-        collapsedIconColor: Colors.grey,
-        collapsedTextColor: Colors.white,
-        collapsedBackgroundColor: Colors.black,
-        tilePadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-      ),
-      child: ExpansionTile(
-          title: Text(
-            '${widget.trackModel.id + 1}',
-            style: const TextStyle(
-              fontSize: 20, // Reduce font size
-            ),
+  void didUpdateWidget(covariant TrackControlsWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedTrack != widget.selectedTrack) {
+      setState(() {
+        _volume = widget.selectedTrack.volume;
+        _frequency = widget.selectedTrack.frequency;
+        _wavetable = widget.selectedTrack.wavetable;
+      });
+    }
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          border: Border.all(
+            color: widget.borderColor,
+            width: 2,
           ),
-          children: [
-            const Divider(thickness: 1, color: Colors.grey),
-            _buildWavetableSelector(),
-            const Divider(thickness: 1, color: Colors.grey),
-            _buildFrequencyControl(),
-            const Divider(thickness: 1, color: Colors.grey),
-            _buildVolumeControl(),
-            const SizedBox(height: 7.5),
-          ],
         ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+          Center(
+            child:Text(
+              'Track ${widget.selectedTrack.trackId + 1}',
+              style: TextStyle(
+                color: widget.borderColor,
+                fontSize: 20,
+                fontFamily: 'QuicksandRegular',
+                fontWeight: FontWeight.bold
+              )
+            ), 
+          ),
+          
+          const Divider(thickness: 1, color: Colors.grey),
+          Text(
+            'Wavetable: ${_getWavetableString(_wavetable)}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontFamily: 'QuicksandRegular',
+              fontWeight: FontWeight.bold
+            )
+          ),
+          const Divider(thickness: 1, color: Colors.grey),
+          _buildWavetableSelector(),
+          const Divider(thickness: 1, color: Colors.grey),
+          Text(
+            'Frequency: ${_frequency.toStringAsFixed(3)}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontFamily: 'QuicksandRegular',
+              fontWeight: FontWeight.bold
+            )
+          ),
+          const Divider(thickness: 1, color: Colors.grey),
+          _buildFrequencyControl(),
+          const Divider(thickness: 1, color: Colors.grey),
+          Text(
+            'Volume: ${_volume.toStringAsFixed(3)}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontFamily: 'QuicksandRegular',
+              fontWeight: FontWeight.bold
+            )
+          ),
+          const Divider(thickness: 1, color: Colors.grey),
+          _buildVolumeControl(),
+          const Divider(thickness: 1, color: Colors.grey),
+        ],
       ),
     );
-}
+  }
 
   Widget _buildWavetableSelector() {
     return SizedBox(
@@ -128,7 +183,8 @@ Widget build(BuildContext context) {
                   onPressed: () {
                     setState(() {
                       _wavetable = wavetable;
-                      _changeWavetable(wavetable.index);
+                      widget.selectedTrack.wavetable = wavetable;
+                      _setWavetable(wavetable.index);
                     });
                   },
                 ),
@@ -177,6 +233,7 @@ Widget build(BuildContext context) {
                   onChanged: (value) {
                     setState(() {
                       _frequency = value;
+                      widget.selectedTrack.frequency = value;
                       _setFrequency(_frequency);
                     });
                   },
@@ -227,6 +284,7 @@ Widget build(BuildContext context) {
                 onChanged: (value) {
                   setState(() {
                     _volume = value;
+                    widget.selectedTrack.volume = value;
                     _setVolume(_volume);
                   });
                 },

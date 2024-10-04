@@ -1,52 +1,33 @@
 #pragma once
 
 #include <vector>
-#include <atomic>
+#include <array>
+#include <memory>
 
 #include "audio_source.h"
+#include "audio_track.h"
 
 namespace DroneFactory {
     class Oscillator : public AudioSource {
     public:
+        static constexpr int NUM_TRACKS = 8;
+        static constexpr int CHANNEL_COUNT = 2;
+        
         Oscillator() = default;
-        Oscillator(std::vector<float> wavetable, float sampleRate);
+        Oscillator(const std::vector<float>& wavetablefloat, float sampleRate);
 
-        std::pair<float, float> getSample() override;
+        void getSamples(float* outputBuffer, int numSamples) override;
         void onPlaybackStopped() override;
 
-        virtual void setFrequency(float newFrequency);
-        virtual void setAmplitude(float newAmplitude);
-        virtual void setWavetable(const std::vector<float> &wavetable);
+        void setFrequency(int trackId, float newFrequency);
+        void setAmplitude(int trackId, float newAmplitude);
+        void setWavetable(int trackId, const std::vector<float>& wavetable);
 
     private:
-        float interpolateLinearly() const;
-        void swapWavetableIfNecessary();
+        void generateTrackSamples(AudioTrack& track, float* outputBuffer, int numSamples, int trackIndex);
 
-        float m_index = 0.f;
-        std::atomic<float> m_indexIncrement{0.f};
-        std::vector<float> m_wavetable;
+        std::array<std::shared_ptr<AudioTrack>, NUM_TRACKS> m_tracks;
+        
         float m_sampleRate;
-        std::atomic<float> m_amplitude{1.f};
-        std::atomic<float> m_frequency{440.f};
-
-        std::atomic<bool> m_swapWavetable{false};
-        std::vector<float> m_wavetableToSwap;
-        std::atomic<bool> m_wavetableIsBeingSwapped{false};
-    };
-
-    class A4Oscillator : public Oscillator {
-    public:
-        explicit A4Oscillator(float sampleRate);
-
-        std::pair<float, float> getSample() override;
-        void onPlaybackStopped() override;
-
-        void setFrequency(float newFrequency) override {};
-        void setAmplitude(float newAmplitude) override {};
-        void setWavetable(const std::vector<float> &wavetable) override {};
-
-    private:    
-        float m_phase{0.f};
-        float m_phaseIncrement{0.f};
     };
 }

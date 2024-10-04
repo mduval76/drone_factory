@@ -1,14 +1,15 @@
 #include <utility>
+#include <vector>
 
 #include "oboe_audio_player.h"
-#include "log.h"
 #include "audio_source.h"
+#include "log.h"
 
 using namespace oboe;
 
 namespace DroneFactory {
 #ifndef NDEBUG
-static std::atomic<int> instances{0};
+    static std::atomic<int> instances{0};
 #endif
 
     OboeAudioPlayer::OboeAudioPlayer(std::shared_ptr<AudioSource> source, int sampleRate)
@@ -16,7 +17,7 @@ static std::atomic<int> instances{0};
 #ifndef NDEBUG
         LOGD("OboeAudioPlayer created. Instances count: %d", ++instances);
 #endif
-        }
+    }
 
     OboeAudioPlayer::~OboeAudioPlayer() {
 #ifndef NDEBUG
@@ -26,7 +27,9 @@ static std::atomic<int> instances{0};
     }
 
     int32_t OboeAudioPlayer::play() {
+#ifndef NDEBUG
         LOGD("OboeAudioPlayer::play()");
+#endif
         AudioStreamBuilder builder;
         const auto result =
             builder.setPerformanceMode(PerformanceMode::LowLatency)
@@ -49,7 +52,9 @@ static std::atomic<int> instances{0};
     }
 
     void OboeAudioPlayer::stop() {
+#ifndef NDEBUG
         LOGD("OboeAudioPlayer::stop()");
+#endif
         if (m_stream) {
             m_stream->stop();
             m_stream->close();
@@ -61,21 +66,12 @@ static std::atomic<int> instances{0};
     oboe::DataCallbackResult OboeAudioPlayer::onAudioReady(oboe::AudioStream* oboeStream, void* audioData, int32_t numFrames) {
         auto* floatData = reinterpret_cast<float*>(audioData);
 
-        for (auto frame = 0; frame < numFrames; ++frame) {
-            const auto [leftSample, rightSample] = m_source->getSample();
-            
-            for (auto channel = 0; channel < channelCount; ++channel) {
-                if (channel == 0) {
-                    floatData[frame * channelCount + channel] = leftSample;
-                } 
-                else if (channel == 1) {
-                    floatData[frame * channelCount + channel] = rightSample;
-                } 
-                else {
-                    floatData[frame * channelCount + channel] = 0.0f;
-                }
-            }
-        }
+        std::vector<float> stereoOutputBuffer(numFrames * channelCount, 0.0f);
+
+        m_source->getSamples(stereoOutputBuffer.data(), numFrames);
+
+        std::copy(stereoOutputBuffer.begin(), stereoOutputBuffer.end(), floatData);
+        
         return oboe::DataCallbackResult::Continue;
     }
 }

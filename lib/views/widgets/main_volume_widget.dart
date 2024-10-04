@@ -63,8 +63,7 @@ class _MainVolumeWidgetState extends State<MainVolumeWidget> with SingleTickerPr
   Widget build(BuildContext context) {
     final currentWidgetHeight = MediaQuery.of(context).size.height;
 
-    return Expanded(
-      child: Container(
+    return Container(
         height: double.infinity,
         padding: const EdgeInsets.all(2.5),
         decoration: const BoxDecoration(
@@ -103,7 +102,6 @@ class _MainVolumeWidgetState extends State<MainVolumeWidget> with SingleTickerPr
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }

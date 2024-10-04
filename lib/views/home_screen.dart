@@ -8,19 +8,24 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final spacing = screenHeight < 600 ? 5.0 : 10.0;
-
     return Container(
-      width: double.infinity,
       color: Colors.black,
-      child: Column(
+      child: const Column(
         children: [
-          const MainVolumeOscilloscopeSection(),
-          SizedBox(height: spacing),
-          const MainMenuSection(),
-          SizedBox(height: spacing),
-          const MainMixerTrackControlsSection(),
+          Expanded(
+            flex: 3,
+            child: MainVolumeOscilloscopeSection(),
+          ), 
+          SizedBox(height: 5.0),
+          Expanded(
+            child: MainMenuSection(),
+          ),
+          SizedBox(height: 5.0),
+          Expanded(
+            flex: 6,
+            child: MainMixerTrackControlsSection(),
+          ),
+          SizedBox(height: 30.0),
         ],
       ),
     );

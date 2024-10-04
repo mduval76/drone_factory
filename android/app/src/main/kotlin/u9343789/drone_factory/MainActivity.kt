@@ -15,7 +15,6 @@ class MainActivity: FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Set up the platform channel
         flutterEngine?.let {
             MethodChannel(it.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
@@ -24,7 +23,8 @@ class MainActivity: FlutterActivity() {
                         try {
                             nativeSynthesizer.play()
                             result.success(null)
-                        } catch (e: Exception) {
+                        } 
+                        catch (e: Exception) {
                             result.error("ERROR", "Failed to play", e.localizedMessage)
                         }
                     }
@@ -34,7 +34,8 @@ class MainActivity: FlutterActivity() {
                         try {
                             nativeSynthesizer.stop()
                             result.success(null)
-                        } catch (e: Exception) {
+                        } 
+                        catch (e: Exception) {
                             result.error("ERROR", "Failed to stop", e.localizedMessage)
                         }
                     }
@@ -44,42 +45,51 @@ class MainActivity: FlutterActivity() {
                         try {
                             val isPlaying = nativeSynthesizer.isPlaying()
                             result.success(isPlaying)
-                        } catch (e: Exception) {
+                        } 
+                        catch (e: Exception) {
                             result.error("ERROR", "Failed to check if playing", e.localizedMessage)
                         }
                     }
                 }
                 "setFrequency" -> {
+                    val trackId = call.argument<Int>("trackId") ?: 0
                     val frequency = call.argument<Double>("frequency")?.toFloat() ?: 440f
+                    Log.d("Synth", "Setting frequency to $frequency for track $trackId")
                     CoroutineScope(Dispatchers.Main).launch {
                         try {
-                            nativeSynthesizer.setFrequency(frequency)
+                            nativeSynthesizer.setFrequency(trackId, frequency)
                             result.success(null)
-                        } catch (e: Exception) {
+                        } 
+                        catch (e: Exception) {
                             result.error("ERROR", "Failed to set frequency", e.localizedMessage)
                         }
                     }
                 }
                 "setVolume" -> {
+                    val trackId = call.argument<Int>("trackId") ?: 0
                     val volume = call.argument<Double>("volume")?.toFloat() ?: -30f
                     val volumeInDb = volume * 60 - 60
-                    Log.d("Synth", "Setting volume to $volume")
+                    Log.d("Synth", "Setting volume to $volume for track $trackId")
                     CoroutineScope(Dispatchers.Main).launch {
                         try {
-                            nativeSynthesizer.setVolume(volumeInDb)
+                            nativeSynthesizer.setVolume(trackId, volumeInDb)
                             result.success(null)
-                        } catch (e: Exception) {
+                        } 
+                        catch (e: Exception) {
                             result.error("ERROR", "Failed to set volume", e.localizedMessage)
                         }
                     }
                 }
                 "setWavetable" -> {
-                    val wavetable = call.arguments as Int
+                    val args = call.arguments as Map<*, *>
+                    val trackId = args["trackId"] as? Int ?: 0
+                    val wavetable = args["wavetable"] as? Int ?: 0
                     CoroutineScope(Dispatchers.Main).launch {
                         try {
-                            nativeSynthesizer.setWavetable(Wavetable.values()[wavetable])
+                            nativeSynthesizer.setWavetable(trackId, Wavetable.values()[wavetable])
                             result.success(null)
-                        } catch (e: Exception) {
+                        } 
+                        catch (e: Exception) {
                             result.error("ERROR", "Failed to set wavetable", e.localizedMessage)
                         }
                     }

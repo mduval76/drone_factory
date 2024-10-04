@@ -30,7 +30,7 @@ interface Synthesizer {
     suspend fun play()
     suspend fun stop()
     suspend fun isPlaying() : Boolean
-    suspend fun setFrequency(frequencyInHz: Float)
-    suspend fun setVolume(volumeInDb: Float)
-    suspend fun setWavetable(wavetable: Wavetable)
+    suspend fun setFrequency(trackId: Int, frequencyInHz: Float)
+    suspend fun setVolume(trackId: Int, volumeInDb: Float)
+    suspend fun setWavetable(trackId: Int, wavetable: Wavetable)
 }

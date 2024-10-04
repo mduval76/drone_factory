@@ -21,18 +21,17 @@ namespace DroneFactory {
         void stop();
         bool isPlaying() const;
 
-        void setFrequency(float frequencyInHz);
-        void setVolume(float volumeInDb);
-        void setWavetable(Wavetable wavetable);
+        void setFrequency(int trackId, float frequencyInHz);
+        void setVolume(int trackId, float volumeInDb);
+        void setWavetable(int trackId, Wavetable wavetable);
 
     private:
-        std::atomic<bool> m_isPlaying{false};
-        float m_frequency;
-        float m_volume;
-        Wavetable m_wavetable{Wavetable::SINE};
         WavetableFactory m_wavetableFactory;
-        std::shared_ptr<Oscillator> m_oscillator;
+        
+        std::atomic<bool> m_isPlaying{false};
         std::mutex m_mutex;
+        std::shared_ptr<Oscillator> m_oscillator;
         std::unique_ptr<AudioPlayer> m_audioPlayer;
+
     };
 }

@@ -10,62 +10,53 @@ import kotlin.math.ln
 
 class SynthesizerViewModel : ViewModel() {
     var synthesizer: Synthesizer? = null
-        set(value) {
-            field = value
-            applyParameters()
-        }
+    set(value) {
+        field = value
+        applyParameters(0)
+    }
 
     private val _frequency = MutableLiveData(440f)
     val frequency: LiveData<Float>
-        get() {
-            return _frequency
-        }
+    get() {
+        return _frequency
+    }
     private val frequencyRange = 20f..2000f
     
     private val _volume = MutableLiveData(0f)
     val volume: LiveData<Float>
-        get() {
-            return _volume
-        }
+    get() {
+        return _volume
+    }
     val volumeRange = (-60f)..0f
     
     private var wavetable = Wavetable.SINE
 
-    fun setFrequencySliderPosition(frequencySliderPosition: Float) {
+    fun setFrequencySliderPosition(trackId: Int, frequencySliderPosition: Float) {
         val frequencyInHz = frequencyInHzFromSliderPosition(frequencySliderPosition)
         _frequency.value = frequencyInHz
 
         // Coroutine
         viewModelScope.launch {
-            synthesizer?.setFrequency(frequencyInHz)
+            synthesizer?.setFrequency(trackId, frequencyInHz)
         }
     }
 
-    fun setVolumeSliderPosition(volumeSliderPosition: Float) {
+    fun setVolumeSliderPosition(trackId: Int, volumeSliderPosition: Float) {
         val volumeInDb = volumeInDbFromSliderPosition(volumeSliderPosition)
         _volume.value = volumeInDb
 
         // Coroutine
         viewModelScope.launch {
-            synthesizer?.setVolume(volumeInDb)
+            synthesizer?.setVolume(trackId, volumeInDb)
         }
     }
-    
-    // fun setVolume(volumeInDb: Float) {
-    //     _volume.value = volumeInDb
 
-    //     // Coroutine
-    //     viewModelScope.launch {
-    //         synthesizer?.setVolume(volumeInDb)
-    //     }
-    // }
-
-    fun setWavetable(newWavetable: Wavetable) {
+    fun setWavetable(trackId: Int, newWavetable: Wavetable) {
         wavetable = newWavetable
 
         // Coroutine
         viewModelScope.launch {
-            synthesizer?.setWavetable(newWavetable)
+            synthesizer?.setWavetable(trackId, newWavetable)
         }
     }
 
@@ -93,7 +84,7 @@ class SynthesizerViewModel : ViewModel() {
     }
 
     private fun volumeInDbFromSliderPosition(sliderPosition: Float): Float {
-        val rangePosition = linearToExponential(sliderPosition)
+        val rangePosition = sliderPosition
         return valueFromRangePosition(volumeRange, sliderPosition)
     }
 
@@ -103,55 +94,48 @@ class SynthesizerViewModel : ViewModel() {
     }
 
     companion object LinearToExponentialConverter {
-
         private const val MINIMUM_VALUE = 0.001f
+
         fun linearToExponential(value: Float): Float {
             assert(value in 0f..1f)
-        
-        
             if (value < MINIMUM_VALUE) {
                 return 0f
             }
-        
             return exp(ln(MINIMUM_VALUE) - ln(MINIMUM_VALUE) * value)
         }
     
         fun valueFromRangePosition(range: ClosedFloatingPointRange<Float>, rangePosition: Float): Float {
             assert(rangePosition in 0f..1f)
-        
             return range.start + (range.endInclusive - range.start) * rangePosition
         }
     
     
         fun rangePositionFromValue(range: ClosedFloatingPointRange<Float>, value: Float): Float {
             assert(value in range)
-        
             return (value - range.start) / (range.endInclusive - range.start)
         }
     
     
         fun exponentialToLinear(rangePosition: Float): Float {
             assert(rangePosition in 0f..1f)
-        
             if (rangePosition < MINIMUM_VALUE) {
                 return rangePosition
             }
-        
             return (ln(rangePosition) - ln(MINIMUM_VALUE)) / (-ln(MINIMUM_VALUE))
         }
     }
 
     private val _playButtonLabel = MutableLiveData("Play")
     val playButtonLabel: LiveData<String>
-        get() {
-            return _playButtonLabel
-        }
+    get() {
+        return _playButtonLabel
+    }
 
-    fun applyParameters() {
+    fun applyParameters(trackId: Int) {
         viewModelScope.launch {
-            synthesizer?.setFrequency(frequency.value!!)
-            synthesizer?.setVolume(volume.value ?: 0f)
-            synthesizer?.setWavetable(wavetable)
+            synthesizer?.setFrequency(trackId, frequency.value!!)
+            synthesizer?.setVolume(trackId, volume.value ?: 0f)
+            synthesizer?.setWavetable(trackId, wavetable)
             updatePlayButtonLabel()
         }
     }
