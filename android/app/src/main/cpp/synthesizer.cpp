@@ -1,9 +1,9 @@
 #include <cmath>
 
-#include "synthesizer.h"
-#include "log.h"
 #include "oboe_audio_player.h"
 #include "oscillator.h"
+#include "synthesizer.h"
+#include "log.h"
 
 namespace DroneFactory {
     float dBToAmplitude(float dB) {
@@ -11,7 +11,8 @@ namespace DroneFactory {
     }
 
     Synthesizer::Synthesizer() 
-        : m_oscillator{std::make_shared<Oscillator>(m_wavetableFactory.getWavetable(m_wavetable), sampleRate)}, m_audioPlayer(std::make_unique<OboeAudioPlayer>(m_oscillator, sampleRate)) {}
+        : m_oscillator{std::make_shared<Oscillator>(m_wavetableFactory.getWavetable(Wavetable::SINE), static_cast<float>(sampleRate))}, 
+          m_audioPlayer(std::make_unique<OboeAudioPlayer>(m_oscillator, sampleRate)) {}
 
     Synthesizer::~Synthesizer() = default;
 
@@ -39,23 +40,17 @@ namespace DroneFactory {
         m_isPlaying = false;
     }
 
-    void Synthesizer::setFrequency(float frequencyInHz) {
+    void Synthesizer::setFrequency(int trackId, float frequencyInHz) {
         // LOGD("SYNTHESIZER: Frequency set to %.2f Hz.", frequencyInHz);
-        m_oscillator->setFrequency(frequencyInHz);
+        m_oscillator->setFrequency(trackId, frequencyInHz);
     }
 
-    void Synthesizer::setVolume(float volumeInDb) {
-        // LOGD("SYNTHESIZER: Volume set to %.2f dB.", volumeInDb);
+    void Synthesizer::setVolume(int trackId, float volumeInDb) {
         const auto amplitude = dBToAmplitude(volumeInDb);
-        // LOGD("SYNTHESIZER: Amplitude set to %.2f.", amplitude);
-        m_oscillator->setAmplitude(amplitude);
+        m_oscillator->setAmplitude(trackId, amplitude);
     }
 
-    void Synthesizer::setWavetable(Wavetable wavetable) {
-        // LOGD("SYNTHESIZER: setWavetable() called");
-        if (m_wavetable != wavetable) {
-            m_wavetable = wavetable;
-            m_oscillator->setWavetable(m_wavetableFactory.getWavetable(wavetable));
-        }
+    void Synthesizer::setWavetable(int trackId, Wavetable wavetable) {
+        m_oscillator->setWavetable(trackId, m_wavetableFactory.getWavetable(wavetable));
     }
 }

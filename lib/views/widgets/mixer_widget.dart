@@ -18,7 +18,7 @@ class MixerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<TrackModel> tracks = List.generate(
       8,
-      (index) => TrackModel(id: index),
+      (index) => TrackModel(trackId: index),
     );
 
     return Column(

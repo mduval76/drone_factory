@@ -17,13 +17,13 @@ class _MainMixerTrackControlsSectionState extends State<MainMixerTrackControlsSe
   @override
   void initState() {
     super.initState();
-    _tracks = List.generate(8, (index) => TrackModel(id: index));
+    _tracks = List.generate(8, (index) => TrackModel(trackId: index));
     _selectedTrack = _tracks[0];
   }
 
-  void _updateSelectedTrack(int trackIndex) {
+  void _updateSelectedTrack(int trackId) {
     setState(() {
-      _selectedTrack = _tracks[trackIndex];
+      _selectedTrack = _tracks[trackId];
     });
   }
 
@@ -52,13 +52,13 @@ class _MainMixerTrackControlsSectionState extends State<MainMixerTrackControlsSe
 
   @override
   Widget build(BuildContext context) {
-    final Color selectedColor = _setTrackColor(_selectedTrack.id);
+    final Color selectedColor = _setTrackColor(_selectedTrack.trackId);
 
     return Row(
       children: <Widget>[
         Expanded(
           child: MixerWidget(
-            selectedTrack: _selectedTrack.id,
+            selectedTrack: _selectedTrack.trackId,
             onTrackSelected: _updateSelectedTrack,
             setTrackColor: _setTrackColor,
           ),

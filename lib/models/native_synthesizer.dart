@@ -30,25 +30,25 @@ class NativeSynthesizer {
     }
   }
 
-  Future<void> setVolume(double volume) async {
+  Future<void> setFrequency(int trackId, double frequency) async {
     try {
-      await _channel.invokeMethod('setVolume', {"volume": volume});
-    } on PlatformException catch (e) {
-      debugPrint("Failed to set volume: '${e.message}'.");
-    }
-  }
-
-  Future<void> setFrequency(double frequency) async {
-    try {
-      await _channel.invokeMethod('setFrequency', {"frequency": frequency});
+      await _channel.invokeMethod('setFrequency', {"trackId": trackId, "frequency": frequency});
     } on PlatformException catch (e) {
       debugPrint("Failed to set frequency: '${e.message}'.");
     }
   }
 
-  Future<void> setWavetable(int wavetable) async {
+  Future<void> setVolume(int trackId, double volume) async {
     try {
-      await _channel.invokeMethod('setWavetable', wavetable);
+      await _channel.invokeMethod('setVolume', {"trackId": trackId, "volume": volume});
+    } on PlatformException catch (e) {
+      debugPrint("Failed to set volume: '${e.message}'.");
+    }
+  }
+
+  Future<void> setWavetable(int trackId, int wavetable) async {
+    try {
+      await _channel.invokeMethod('setWavetable', {"trackId": trackId, "wavetable": wavetable});
     } on PlatformException catch (e) {
       debugPrint("Failed to set wavetable: '${e.message}'.");
     }

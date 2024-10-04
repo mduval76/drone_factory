@@ -1,80 +1,71 @@
 #include <cmath>
-#include "log.h"
+#include <cstring> 
+
 #include "oscillator.h"
 #include "constants.h"
+#include "log.h"
 
 namespace DroneFactory {
-    Oscillator::Oscillator(std::vector<float> wavetable, float sampleRate)
-     : m_wavetable{std::move(wavetable)}, m_sampleRate{sampleRate} {}
+    Oscillator::Oscillator( const std::vector<float>& wavetable, float sampleRate)
+        : m_sampleRate(sampleRate) {
+            for (int i = 0; i < NUM_TRACKS; ++i) {
+                m_tracks[i] = std::make_shared<AudioTrack>(sampleRate, wavetable);
+            }
+        }
 
-    std::pair<float, float> Oscillator::getSample() {
-        m_indexIncrement = m_frequency.load() * static_cast<float>(m_wavetable.size()) / static_cast<float>(m_sampleRate);
+    void Oscillator::getSamples(float* outputBuffer, int numSamples) {
+        std::memset(outputBuffer, 0, sizeof(float) * numSamples * CHANNEL_COUNT);
+        std::vector<float> tempBuffer(numSamples * CHANNEL_COUNT, 0.0f);
 
-        swapWavetableIfNecessary();
+        for (int trackId = 0; trackId < NUM_TRACKS; ++trackId) {
+            generateTrackSamples(*m_tracks[trackId], tempBuffer.data(), numSamples, trackId);
+            for (int frame = 0; frame < numSamples; ++frame) {
+                outputBuffer[frame * CHANNEL_COUNT + 0] += tempBuffer[frame * CHANNEL_COUNT + 0];
+                outputBuffer[frame * CHANNEL_COUNT + 1] += tempBuffer[frame * CHANNEL_COUNT + 1];
+            }
+        }
 
-        m_index = std::fmod(m_index, static_cast<float>(m_wavetable.size()));
-
-        const auto sample = interpolateLinearly();
-
-        m_index += m_indexIncrement;
-        //LOGD("OSCILLATOR: m_index = %.2f, m_indexIncrement = %.5f", m_index, m_indexIncrement.load());
-        float monoSample = m_amplitude * sample;
-
-        return std::make_pair(monoSample, monoSample);
+        for (int i = 0; i < numSamples * CHANNEL_COUNT; ++i) {
+            outputBuffer[i] = std::clamp(outputBuffer[i], -1.0f, 1.0f);
+        }
     }
 
-    void Oscillator::swapWavetableIfNecessary() {
-        m_wavetableIsBeingSwapped.store(true, std::memory_order_release);
-        if (m_swapWavetable.load(std::memory_order_acquire)) {
+    void Oscillator::generateTrackSamples(AudioTrack &track, float *outputBuffer, int numSamples, int trackIndex) {
+        for (int i = 0; i < numSamples; ++i) {
+            float index = track.getIndex();
+            index = std::fmod(index, static_cast<float>(track.getWavetable().size()));
 
-            std::swap(m_wavetable, m_wavetableToSwap);
-            m_swapWavetable.store(false, std::memory_order_relaxed);
+            const auto& wavetable = track.getWavetable();
+            const auto truncatedIndex = static_cast<int>(index);
+            const auto nextIndex = (truncatedIndex + 1u) % wavetable.size();
+            const auto nextIndexWeight = index - static_cast<float>(truncatedIndex);
+
+            float sample = wavetable[truncatedIndex] * (1.f - nextIndexWeight) + wavetable[nextIndex] * nextIndexWeight;
+
+            sample *= track.getAmplitude();
+
+            track.setIndex(index + track.getIndexIncrement());
+
+            outputBuffer[i * CHANNEL_COUNT + 0] = sample;
+            outputBuffer[i * CHANNEL_COUNT + 1] = sample;
         }
-        m_wavetableIsBeingSwapped.store(false, std::memory_order_release);
     }
 
     void Oscillator::onPlaybackStopped() {
-        m_index = 0.f;
-    }
-
-    void Oscillator::setFrequency(float newFrequency) {
-        // LOGD("OSCILLATOR: setFrequencycalled and set to %.2f Hz.", newFrequency);
-        m_frequency.store(newFrequency); 
-        m_indexIncrement = newFrequency * static_cast<float>(m_wavetable.size()) / static_cast<float>(m_sampleRate);
-    }
-
-    void Oscillator::setAmplitude(float newAmplitude) {
-        // LOGD("OSCILLATOR: setAmplitude called and set to %.2f db.", newAmplitude);
-        m_amplitude.store(newAmplitude);
-    }
-
-    void Oscillator::setWavetable(const std::vector<float> &wavetable) {
-        m_swapWavetable.store(false, std::memory_order_release);
-        while (m_wavetableIsBeingSwapped.load(std::memory_order_acquire)) {
+        for (auto& track : m_tracks) {
+            track->setIndex(0.f);
         }
-        m_wavetableToSwap = wavetable;
-        m_swapWavetable.store(true, std::memory_order_release);
     }
 
-    float Oscillator::interpolateLinearly() const {
-        const auto truncatedIndex = static_cast<typename decltype(m_wavetable)::size_type>(m_index);
-        const auto nextIndex = (truncatedIndex + 1u) % m_wavetable.size();
-        const auto nextIndexWeight = m_index - static_cast<float>(truncatedIndex);
-
-        return m_wavetable[nextIndex] * nextIndexWeight + (1.f - nextIndexWeight) * m_wavetable[truncatedIndex];
+    void Oscillator::setFrequency(int trackId, float newFrequency) {
+        m_tracks[trackId]->setFrequency(newFrequency);
     }
 
-    A4Oscillator::A4Oscillator(float sampleRate) : m_phaseIncrement{2.f * PI * 440.f / sampleRate} {}
-    
-    std::pair<float, float> A4Oscillator::getSample() {
-        const auto sample = 0.5f * std::sin(m_phase);
-
-        m_phase = std::fmod(m_phase + m_phaseIncrement, 2.f * PI);
-
-        return std::make_pair(sample, sample);
+    void Oscillator::setAmplitude(int trackId, float newAmplitude) {
+        m_tracks[trackId]->setAmplitude(newAmplitude);
     }
 
-    void A4Oscillator::onPlaybackStopped() {
-        m_phase = 0.f;
+    void Oscillator::setWavetable(int trackId, const std::vector<float>& wavetable) {
+        m_tracks[trackId]->setWavetable(wavetable);
     }
 }

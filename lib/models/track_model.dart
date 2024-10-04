@@ -1,11 +1,11 @@
 class TrackModel {
-  final int id;
+  final int trackId;
   final double volume;
   final double frequency;
   final Wavetable wavetable;
 
   const TrackModel({
-    required this.id,
+    required this.trackId,
     this.volume = 1.0,
     this.frequency = 440.0,
     this.wavetable = Wavetable.sine,

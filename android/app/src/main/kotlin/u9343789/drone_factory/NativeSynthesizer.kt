@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class NativeSynthesizer : Synthesizer {
-
     private var synthesizerHandle: Long = 0
     private val synthesizerMutex = Object()
 
@@ -13,9 +12,9 @@ class NativeSynthesizer : Synthesizer {
     private external fun play(synthesizerHandle: Long)
     private external fun stop(synthesizerHandle: Long)
     private external fun isPlaying(synthesizerHandle: Long): Boolean
-    private external fun setFrequency(synthesizerHandle: Long, frequencyInHz: Float)
-    private external fun setVolume(synthesizerHandle: Long, amplitudeInDb: Float)
-    private external fun setWavetable(synthesizerHandle: Long, wavetable: Int)
+    private external fun setFrequency(synthesizerHandle: Long, trackId: Int, frequencyInHz: Float)
+    private external fun setVolume(synthesizerHandle: Long, trackId: Int, amplitudeInDb: Float)
+    private external fun setWavetable(synthesizerHandle: Long, trackId: Int, wavetable: Int)
 
     companion object {
         init {
@@ -44,24 +43,24 @@ class NativeSynthesizer : Synthesizer {
         }
     }
 
-    override suspend fun setFrequency(frequencyInHz: Float) = withContext(Dispatchers.Default) {
+    override suspend fun setFrequency(trackId: Int, frequencyInHz: Float) = withContext(Dispatchers.Default) {
         synchronized(synthesizerMutex) {
             createNativeHandleIfNotExists()
-            setFrequency(synthesizerHandle, frequencyInHz)
+            setFrequency(synthesizerHandle, trackId, frequencyInHz)
         }
     }
 
-    override suspend fun setVolume(volumeInDb: Float) = withContext(Dispatchers.Default) {
+    override suspend fun setVolume(trackId: Int, volumeInDb: Float) = withContext(Dispatchers.Default) {
         synchronized(synthesizerMutex) {
             createNativeHandleIfNotExists()
-            setVolume(synthesizerHandle, volumeInDb)
+            setVolume(synthesizerHandle, trackId, volumeInDb)
         }
     }
 
-    override suspend fun setWavetable(wavetable: Wavetable) = withContext(Dispatchers.Default) {
+    override suspend fun setWavetable(trackId: Int, wavetable: Wavetable) = withContext(Dispatchers.Default) {
         synchronized(synthesizerMutex) {
             createNativeHandleIfNotExists()
-            setWavetable(synthesizerHandle, wavetable.ordinal)
+            setWavetable(synthesizerHandle, trackId, wavetable.ordinal)
         }
     }
 
@@ -69,7 +68,6 @@ class NativeSynthesizer : Synthesizer {
         if (synthesizerHandle != 0L) {
             return
         }
-
         synthesizerHandle = create()
     }
 }

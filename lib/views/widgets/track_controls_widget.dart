@@ -24,7 +24,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
   late Wavetable _wavetable;
 
   void _changeWavetable(int wavetable) async {
-    await _synthesizer.setWavetable(_wavetable.index);
+    await _synthesizer.setWavetable(widget.selectedTrack.trackId, _wavetable.index);
 
     setState(() {
       _wavetable = Wavetable.values[wavetable];
@@ -45,11 +45,11 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
   }
 
   void _setFrequency(double frequency) async {
-    await _synthesizer.setFrequency(frequency);
+    await _synthesizer.setFrequency(widget.selectedTrack.trackId, frequency);
   }
 
   void _setVolume(double volume) async {
-    await _synthesizer.setVolume(volume);
+    await _synthesizer.setVolume(widget.selectedTrack.trackId, volume);
   }
 
   @override
@@ -76,7 +76,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
           children: <Widget>[
           Center(
             child:Text(
-              'Track ${widget.selectedTrack.id + 1}',
+              'Track ${widget.selectedTrack.trackId + 1}',
               style: TextStyle(
                 color: widget.borderColor,
                 fontSize: 20,

@@ -28,7 +28,7 @@ class _TrackTabWidgetState extends State<TrackTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    bool isSelected = widget.trackModel.id == widget.selectedTrackIndex;
+    bool isSelected = widget.trackModel.trackId == widget.selectedTrackIndex;
     return Row(
       children: [
         Expanded(
@@ -69,7 +69,7 @@ class _TrackTabWidgetState extends State<TrackTabWidget> {
                     left: 9
                   ),
                   child: Text(
-                  '${widget.trackModel.id + 1}',
+                  '${widget.trackModel.trackId + 1}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 25.0,
