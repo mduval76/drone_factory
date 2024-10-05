@@ -67,7 +67,7 @@ class MainActivity: FlutterActivity() {
                 }
                 "setVolume" -> {
                     val trackId = call.argument<Int>("trackId") ?: 0
-                    val volume = call.argument<Double>("volume")?.toFloat() ?: -30f
+                    val volume = call.argument<Double>("volume")?.toFloat() ?: 0f
                     val volumeInDb = volume * 60 - 60
                     Log.d("Synth", "Setting volume to $volume for track $trackId")
                     CoroutineScope(Dispatchers.Main).launch {

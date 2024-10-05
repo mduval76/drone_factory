@@ -134,7 +134,7 @@ class SynthesizerViewModel : ViewModel() {
     fun applyParameters(trackId: Int) {
         viewModelScope.launch {
             synthesizer?.setFrequency(trackId, frequency.value!!)
-            synthesizer?.setVolume(trackId, volume.value ?: 0f)
+            synthesizer?.setVolume(trackId, volume.value!!)
             synthesizer?.setWavetable(trackId, wavetable)
             updatePlayButtonLabel()
         }

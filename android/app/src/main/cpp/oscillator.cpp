@@ -6,10 +6,12 @@
 #include "log.h"
 
 namespace DroneFactory {
-    Oscillator::Oscillator( const std::vector<float>& wavetable, float sampleRate)
+    Oscillator::Oscillator(const std::vector<float>& wavetable, float frequency, float amplitude, float sampleRate)
         : m_sampleRate(sampleRate) {
             for (int i = 0; i < NUM_TRACKS; ++i) {
                 m_tracks[i] = std::make_shared<AudioTrack>(sampleRate, wavetable);
+                m_tracks[i]->setFrequency(frequency);
+                m_tracks[i]->setAmplitude(amplitude);
             }
         }
 

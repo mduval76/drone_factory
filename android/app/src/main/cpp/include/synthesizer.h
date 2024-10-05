@@ -7,6 +7,8 @@
 #include "wavetable_factory.h"
 
 constexpr auto sampleRate = 48000;
+static constexpr float defaultFrequency = 440.0f;
+static constexpr float defaultAmplitude = 0.0f; 
 
 namespace DroneFactory {
     class Oscillator;
@@ -32,6 +34,5 @@ namespace DroneFactory {
         std::mutex m_mutex;
         std::shared_ptr<Oscillator> m_oscillator;
         std::unique_ptr<AudioPlayer> m_audioPlayer;
-
     };
 }

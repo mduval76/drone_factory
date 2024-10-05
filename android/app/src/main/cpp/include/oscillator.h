@@ -14,7 +14,7 @@ namespace DroneFactory {
         static constexpr int CHANNEL_COUNT = 2;
         
         Oscillator() = default;
-        Oscillator(const std::vector<float>& wavetablefloat, float sampleRate);
+        Oscillator(const std::vector<float>& wavetable, float frequency, float amplitude, float sampleRate);
 
         void getSamples(float* outputBuffer, int numSamples) override;
         void onPlaybackStopped() override;

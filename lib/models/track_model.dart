@@ -6,7 +6,7 @@ class TrackModel {
 
   TrackModel({
     required this.trackId,
-    this.volume = 0.75,
+    this.volume = 0.0,
     this.frequency = 440.0,
     this.wavetable = Wavetable.sine,
   });

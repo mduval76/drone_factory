@@ -25,8 +25,8 @@ namespace DroneFactory {
         void setIndexIncrement(float increment);
 
     private:
-        std::atomic<float> m_frequency{440.f};
-        std::atomic<float> m_amplitude{1.f};
+        std::atomic<float> m_frequency;
+        std::atomic<float> m_amplitude;
         std::vector<float> m_wavetable;
         float m_index{0.f};
         float m_indexIncrement{0.f};
