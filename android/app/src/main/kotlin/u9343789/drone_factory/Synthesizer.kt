@@ -5,23 +5,25 @@ enum class Wavetable {
         override fun toString(): String {
           return "Sine"
         }
-      },
-    
+    },
     TRIANGLE {
         override fun toString(): String {
             return "Triangle"
         }
     },
-
     SQUARE {
         override fun toString(): String {
             return "Square"
         }
     },
-
     SAWTOOTH {
         override fun toString(): String {
             return "Sawtooth"
+        }
+    },
+    NONE {
+        override fun toString(): String {
+            return "None"
         }
     };
 }

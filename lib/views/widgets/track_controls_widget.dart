@@ -41,6 +41,8 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
         return 'SQUARE';
       case Wavetable.sawtooth:
         return 'SAWTOOTH';
+      case Wavetable.none:
+        return 'NONE';
     }
   }
 
@@ -160,13 +162,16 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
             case Wavetable.sawtooth:
               assetName = 'assets/icons/sawtooth.svg';
               break;
+            case Wavetable.none:
+              assetName = 'assets/icons/none.svg';
+              break;
           }
           return Container(
               padding: const EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border(
-                  right: wavetable != Wavetable.sawtooth
+                  right: wavetable != Wavetable.none
                       ? const BorderSide(color: Colors.grey, width: 1)
                       : BorderSide.none,
                 ),
@@ -178,7 +183,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                     assetName,
                     height: 20,
                     width: 20,
-                    color: _wavetable == wavetable ? Colors.blue : Colors.white,
+                    color: _wavetable == wavetable ? widget.borderColor : Colors.white,
                   ),
                   onPressed: () {
                     setState(() {
@@ -189,7 +194,6 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                   },
                 ),
               ),
-            
           );
         }).toList(),
       ),
@@ -218,13 +222,13 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
             Expanded(
               flex: 10,
               child: SliderTheme(
-                data: const SliderThemeData(
+                data: SliderThemeData(
                   trackHeight: 25,
-                  activeTrackColor: Color.fromARGB(227, 255, 255, 255),
-                  inactiveTrackColor: Color.fromARGB(196, 158, 158, 158),
-                  thumbColor: Colors.white,
-                  thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.5),
-                  trackShape: RectangularSliderTrackShape(),
+                  activeTrackColor: widget.borderColor,
+                  inactiveTrackColor: const Color.fromARGB(196, 158, 158, 158),
+                  thumbColor: widget.borderColor,
+                  thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12.5),
+                  trackShape: const RectangularSliderTrackShape(),
                 ),
                 child: Slider(
                   min: 20,
@@ -269,13 +273,13 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
           Expanded(
             flex: 10,
             child: SliderTheme(
-              data: const SliderThemeData(
+              data: SliderThemeData(
                 trackHeight: 25,
-                activeTrackColor: Color.fromARGB(227, 255, 255, 255),
-                inactiveTrackColor: Color.fromARGB(196, 158, 158, 158),
-                thumbColor: Colors.white,
-                thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.5),
-                trackShape: RectangularSliderTrackShape(),
+                activeTrackColor: widget.borderColor,
+                inactiveTrackColor: const Color.fromARGB(196, 158, 158, 158),
+                thumbColor: widget.borderColor,
+                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12.5),
+                trackShape: const RectangularSliderTrackShape(),
               ),
               child: Slider(
                 min: 0,

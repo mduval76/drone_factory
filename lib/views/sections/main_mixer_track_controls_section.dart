@@ -58,6 +58,7 @@ class _MainMixerTrackControlsSectionState extends State<MainMixerTrackControlsSe
       children: <Widget>[
         Expanded(
           child: MixerWidget(
+            tracks: _tracks,
             selectedTrack: _selectedTrack.trackId,
             onTrackSelected: _updateSelectedTrack,
             setTrackColor: _setTrackColor,

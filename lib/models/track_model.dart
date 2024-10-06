@@ -8,7 +8,7 @@ class TrackModel {
     required this.trackId,
     this.volume = 0.0,
     this.frequency = 440.0,
-    this.wavetable = Wavetable.sine,
+    this.wavetable = Wavetable.none,
   });
 }
 
@@ -17,4 +17,5 @@ enum Wavetable {
   triangle,
   square,
   sawtooth,
+  none
 }

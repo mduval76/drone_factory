@@ -20,7 +20,7 @@ class SynthesizerViewModel : ViewModel() {
     get() {
         return _frequency
     }
-    private val frequencyRange = 20f..2000f
+    private val frequencyRange = 20f..500f
     
     private val _volume = MutableLiveData(0f)
     val volume: LiveData<Float>
@@ -29,7 +29,7 @@ class SynthesizerViewModel : ViewModel() {
     }
     val volumeRange = (-60f)..0f
     
-    private var wavetable = Wavetable.SINE
+    private var wavetable = Wavetable.NONE
 
     fun setFrequencySliderPosition(trackId: Int, frequencySliderPosition: Float) {
         val frequencyInHz = frequencyInHzFromSliderPosition(frequencySliderPosition)

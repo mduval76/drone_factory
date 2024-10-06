@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 
 class MixerWidget extends StatelessWidget {
   final int selectedTrack;
+  final List<TrackModel> tracks;
   final ValueChanged<int> onTrackSelected;
   final Color Function(int) setTrackColor;
 
   const MixerWidget({
     super.key,
+    required this.tracks,
     required this.selectedTrack,
     required this.onTrackSelected,
     required this.setTrackColor,
@@ -16,11 +18,6 @@ class MixerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<TrackModel> tracks = List.generate(
-      8,
-      (index) => TrackModel(trackId: index),
-    );
-
     return Column(
       children: List.generate(tracks.length * 2 - 1, (index) {
         if (index.isEven) {

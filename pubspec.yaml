@@ -18,6 +18,7 @@ dev_dependencies:
 
 flutter:
   assets:
+      - assets/icons/none.svg
       - assets/icons/sine.svg
       - assets/icons/triangle.svg
       - assets/icons/square.svg

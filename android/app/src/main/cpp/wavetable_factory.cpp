@@ -88,6 +88,8 @@ namespace DroneFactory {
                 return squareWavetable();
             case Wavetable::SAWTOOTH:
                 return sawtoothWavetable();
+            case Wavetable::NONE:
+                return std::vector<float>(WAVETABLE_LENGTH, 0.f);
             default:
                 return std::vector<float>(WAVETABLE_LENGTH, 0.f);
         }

@@ -11,7 +11,7 @@ namespace DroneFactory {
     }
 
     Synthesizer::Synthesizer() 
-        : m_oscillator{std::make_shared<Oscillator>(m_wavetableFactory.getWavetable(Wavetable::SINE), defaultFrequency, defaultAmplitude, static_cast<float>(sampleRate))}, 
+        : m_oscillator{std::make_shared<Oscillator>(m_wavetableFactory.getWavetable(Wavetable::NONE), defaultFrequency, defaultAmplitude, static_cast<float>(sampleRate))}, 
           m_audioPlayer(std::make_unique<OboeAudioPlayer>(m_oscillator, sampleRate)) {}
 
     Synthesizer::~Synthesizer() = default;
