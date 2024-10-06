@@ -25,16 +25,18 @@ class _TrackTabWidgetState extends State<TrackTabWidget> {
     super.initState();
     _color = widget.color;
   }
-
+  //TODO: Implement lower opacity background color for active tracks
+  //TODO: Implement muted grey background color for muted tracks
   @override
   Widget build(BuildContext context) {
     bool isSelected = widget.trackModel.trackId == widget.selectedTrackIndex;
+    bool isActive = widget.trackModel.wavetable != Wavetable.none;
     return Row(
       children: [
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: isSelected ? _color : Colors.black,
+              color: isSelected ? _color : isActive ? _color.withOpacity(0.5) : Colors.black,
               border: isSelected ? 
               Border(
               left: BorderSide(
@@ -83,7 +85,7 @@ class _TrackTabWidgetState extends State<TrackTabWidget> {
         Container(
           width: 5.0,
           decoration: BoxDecoration(
-            color: isSelected ? _color : Colors.black,
+            color: isSelected ? _color : isActive ? _color.withOpacity(0.5) : Colors.black,
             border: isSelected ? 
               Border(
                 left: const BorderSide(

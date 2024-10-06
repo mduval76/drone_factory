@@ -186,6 +186,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                     setState(() {
                       _wavetable = wavetable;
                       widget.selectedTrack.wavetable = wavetable;
+                      widget.selectedTrack.isActive = wavetable != Wavetable.none;
                       _setWavetable(wavetable.index);
                     });
                   },
