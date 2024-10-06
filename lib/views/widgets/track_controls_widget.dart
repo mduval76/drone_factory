@@ -146,7 +146,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
     return SizedBox(
       height: 22.5,
       child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: Wavetable.values.map((wavetable) {
           String assetName;
           switch (wavetable) {
@@ -167,7 +167,6 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
               break;
           }
           return Container(
-              padding: const EdgeInsets.only(left: 5),
                 decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border(
@@ -177,12 +176,10 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                 ),
               ),
               child: Transform.scale(
-                scale: 7,
+                scale: 3,
                 child: IconButton(
                   icon: SvgPicture.asset(
                     assetName,
-                    height: 20,
-                    width: 20,
                     color: _wavetable == wavetable ? widget.borderColor : Colors.white,
                   ),
                   onPressed: () {
