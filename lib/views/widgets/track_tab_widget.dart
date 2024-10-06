@@ -36,7 +36,7 @@ class _TrackTabWidgetState extends State<TrackTabWidget> {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: isSelected ? _color : isActive ? _color.withOpacity(0.5) : Colors.black,
+              color: isSelected ? _color : isActive ? widget.trackModel.isMuted ? Colors.grey.withOpacity(0.75) : _color.withOpacity(0.66) : Colors.black,
               border: isSelected ? 
               Border(
               left: BorderSide(
@@ -85,7 +85,7 @@ class _TrackTabWidgetState extends State<TrackTabWidget> {
         Container(
           width: 5.0,
           decoration: BoxDecoration(
-            color: isSelected ? _color : isActive ? _color.withOpacity(0.5) : Colors.black,
+            color: isSelected ? _color : isActive ? widget.trackModel.isMuted ? Colors.grey.withOpacity(0.75) : _color.withOpacity(0.66) : Colors.black,
             border: isSelected ? 
               Border(
                 left: const BorderSide(

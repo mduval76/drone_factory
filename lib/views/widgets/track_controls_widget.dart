@@ -78,28 +78,64 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(5.0),
-        decoration: BoxDecoration(
-          color: Colors.black,
-          border: Border.all(
-            color: widget.borderColor,
-            width: 2,
-          ),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        border: Border.all(
+          color: widget.borderColor,
+          width: 2,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-          Center(
-            child:Text(
-              'Track ${widget.selectedTrack.trackId + 1}',
-              style: TextStyle(
-                color: widget.borderColor,
-                fontSize: 20,
-                fontFamily: 'QuicksandRegular',
-                fontWeight: FontWeight.bold
-              )
-            ), 
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                'Track ${widget.selectedTrack.trackId + 1}',
+                style: TextStyle(
+                  color: widget.borderColor,
+                  fontSize: 20,
+                  fontFamily: 'QuicksandRegular',
+                  fontWeight: FontWeight.bold
+                )
+              ),
+              OutlinedButtonTheme(
+                data: OutlinedButtonThemeData(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: widget.selectedTrack.isMuted ? widget.borderColor : Colors.transparent,
+                    side: BorderSide(color: widget.borderColor, width: 1),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(0.0)),
+                    ),
+                    minimumSize: const Size(20, 20),
+                    padding: EdgeInsets.zero,
+                  ),
+                ),
+                child: OutlinedButton(
+                  onPressed:() {
+                    setState(() {
+                      if (widget.selectedTrack.isActive) {
+                        widget.selectedTrack.isMuted = !widget.selectedTrack.isMuted;
+                      }
+                    });
+                  }, 
+                  child: Text(
+                    'M',
+                    style: TextStyle(
+                      color: widget.selectedTrack.isMuted ? Colors.black : widget.borderColor,
+                      fontSize: 15,
+                      fontFamily: 'QuicksandRegular',
+                      fontWeight: FontWeight.bold
+                    )
+                  ),
+                )
+                
+                
+                
+              ),
+            ],
           ),
-          
           const Divider(thickness: 1, color: Colors.grey),
           Text(
             'Wavetable: ${_getWavetableString(_wavetable)}',
@@ -188,6 +224,10 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                       widget.selectedTrack.wavetable = wavetable;
                       widget.selectedTrack.isActive = wavetable != Wavetable.none;
                       _setWavetable(wavetable.index);
+
+                      if (widget.selectedTrack.wavetable == Wavetable.none) {
+                        widget.selectedTrack.isMuted = false;
+                      }
                     });
                   },
                 ),
