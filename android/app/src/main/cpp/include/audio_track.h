@@ -24,10 +24,17 @@ namespace DroneFactory {
         float getIndexIncrement() const;
         void setIndexIncrement(float increment);
 
+        bool isMuted() const;
+        void setMuted(bool muted);
+
     private:
+        std::atomic<bool> m_isMuted{false};
+
         std::atomic<float> m_frequency;
         std::atomic<float> m_amplitude;
+
         std::vector<float> m_wavetable;
+
         float m_index{0.f};
         float m_indexIncrement{0.f};
         float m_sampleRate;

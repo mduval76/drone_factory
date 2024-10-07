@@ -33,6 +33,10 @@ namespace DroneFactory {
     }
 
     void Oscillator::generateTrackSamples(AudioTrack &track, float *outputBuffer, int numSamples, int trackIndex) {
+        if (track.isMuted()) {
+            return;
+        }
+
         for (int i = 0; i < numSamples; ++i) {
             float index = track.getIndex();
             index = std::fmod(index, static_cast<float>(track.getWavetable().size()));
@@ -69,5 +73,9 @@ namespace DroneFactory {
 
     void Oscillator::setWavetable(int trackId, const std::vector<float>& wavetable) {
         m_tracks[trackId]->setWavetable(wavetable);
+    }
+
+    void Oscillator::setIsMuted(int trackId, bool isMuted) {
+        m_tracks[trackId]->setMuted(isMuted);
     }
 }

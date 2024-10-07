@@ -129,4 +129,22 @@ extern "C" {
             LOGD("Synthesizer not created. Please, create the synthesizer first by calling create().");
         }
     }
+
+    JNIEXPORT void JNICALL
+    Java_u9343789_drone_1factory_NativeSynthesizer_setIsMuted(JNIEnv* env, 
+                                                              jobject thiz, 
+                                                              jlong synthesizerHandle, 
+                                                              jint trackId, 
+                                                              jboolean muted) 
+    {
+        auto* synthesizer = reinterpret_cast<DroneFactory::Synthesizer*>(synthesizerHandle);
+        const auto nativeMuted = static_cast<bool>(muted);
+
+        if (synthesizer) {
+            synthesizer->setIsMuted(trackId, nativeMuted);
+        }
+        else {
+            LOGD("Synthesizer not created. Please, create the synthesizer first by calling create().");
+        }
+    }
 }

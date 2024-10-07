@@ -94,6 +94,19 @@ class MainActivity: FlutterActivity() {
                         }
                     }
                 }
+                "setIsMuted" -> {
+                    val trackId = call.argument<Int>("trackId") ?: 0
+                    val isMuted = call.argument<Boolean>("isMuted") ?: false
+                    CoroutineScope(Dispatchers.Main).launch {
+                        try {
+                            nativeSynthesizer.setIsMuted(trackId, isMuted)
+                            result.success(null)
+                        } 
+                        catch (e: Exception) {
+                            result.error("ERROR", "Failed to set mute for track $trackId", e.localizedMessage)
+                        }
+                    }
+                }
                 else -> result.notImplemented()
             }
         }}

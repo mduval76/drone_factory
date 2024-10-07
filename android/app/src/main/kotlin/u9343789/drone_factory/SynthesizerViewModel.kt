@@ -31,6 +31,12 @@ class SynthesizerViewModel : ViewModel() {
     
     private var wavetable = Wavetable.NONE
 
+    private val _isMuted = MutableLiveData(false)
+    val isMuted: LiveData<Boolean>
+    get() {
+        return _isMuted
+    }
+
     fun setFrequencySliderPosition(trackId: Int, frequencySliderPosition: Float) {
         val frequencyInHz = frequencyInHzFromSliderPosition(frequencySliderPosition)
         _frequency.value = frequencyInHz
@@ -57,6 +63,15 @@ class SynthesizerViewModel : ViewModel() {
         // Coroutine
         viewModelScope.launch {
             synthesizer?.setWavetable(trackId, newWavetable)
+        }
+    }
+
+    fun setIsMuted(trackId: Int, isMuted: Boolean) {
+        _isMuted.value = isMuted
+
+        // Coroutine
+        viewModelScope.launch {
+            synthesizer?.setIsMuted(trackId, isMuted)
         }
     }
 
@@ -136,6 +151,7 @@ class SynthesizerViewModel : ViewModel() {
             synthesizer?.setFrequency(trackId, frequency.value!!)
             synthesizer?.setVolume(trackId, volume.value!!)
             synthesizer?.setWavetable(trackId, wavetable)
+            synthesizer?.setIsMuted(trackId, isMuted.value!!)
             updatePlayButtonLabel()
         }
     }

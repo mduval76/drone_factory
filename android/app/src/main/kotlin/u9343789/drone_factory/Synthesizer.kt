@@ -35,4 +35,5 @@ interface Synthesizer {
     suspend fun setFrequency(trackId: Int, frequencyInHz: Float)
     suspend fun setVolume(trackId: Int, volumeInDb: Float)
     suspend fun setWavetable(trackId: Int, wavetable: Wavetable)
+    suspend fun setIsMuted(trackId: Int, isMuted: Boolean)
 }

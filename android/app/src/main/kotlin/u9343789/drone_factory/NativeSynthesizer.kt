@@ -15,6 +15,7 @@ class NativeSynthesizer : Synthesizer {
     private external fun setFrequency(synthesizerHandle: Long, trackId: Int, frequencyInHz: Float)
     private external fun setVolume(synthesizerHandle: Long, trackId: Int, amplitudeInDb: Float)
     private external fun setWavetable(synthesizerHandle: Long, trackId: Int, wavetable: Int)
+    private external fun setIsMuted(synthesizerHandle: Long, trackId: Int, isMuted: Boolean)
 
     companion object {
         init {
@@ -61,6 +62,13 @@ class NativeSynthesizer : Synthesizer {
         synchronized(synthesizerMutex) {
             createNativeHandleIfNotExists()
             setWavetable(synthesizerHandle, trackId, wavetable.ordinal)
+        }
+    }
+
+    override suspend fun setIsMuted(trackId: Int, isMuted: Boolean) = withContext(Dispatchers.Default) {
+        synchronized(synthesizerMutex) {
+            createNativeHandleIfNotExists()
+            setIsMuted(synthesizerHandle, trackId, isMuted)
         }
     }
 

@@ -48,4 +48,11 @@ namespace DroneFactory {
         m_indexIncrement = increment;
     }
 
+    bool AudioTrack::isMuted() const {
+        return m_isMuted.load();
+    }
+
+    void AudioTrack::setMuted(bool muted) {
+        m_isMuted.store(muted);
+    }
 }

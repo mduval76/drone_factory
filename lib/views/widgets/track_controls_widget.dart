@@ -31,6 +31,14 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
     });
   }
 
+  void _setIsMuted(bool isMuted) async {
+    await _synthesizer.setIsMuted(widget.selectedTrack.trackId, isMuted);
+
+    setState(() {
+      widget.selectedTrack.isMuted = isMuted;
+    });
+  }
+
   String _getWavetableString(Wavetable wavetable) {
     switch (wavetable) {
       case Wavetable.sine:
@@ -114,11 +122,10 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                 ),
                 child: OutlinedButton(
                   onPressed:() {
-                    setState(() {
-                      if (widget.selectedTrack.isActive) {
-                        widget.selectedTrack.isMuted = !widget.selectedTrack.isMuted;
-                      }
-                    });
+                    if (widget.selectedTrack.isActive) {
+                      widget.selectedTrack.isMuted = !widget.selectedTrack.isMuted;
+                      _setIsMuted(widget.selectedTrack.isMuted);
+                    }
                   }, 
                   child: Text(
                     'M',
@@ -130,9 +137,6 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                     )
                   ),
                 )
-                
-                
-                
               ),
             ],
           ),

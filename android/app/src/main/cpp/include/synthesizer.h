@@ -26,6 +26,7 @@ namespace DroneFactory {
         void setFrequency(int trackId, float frequencyInHz);
         void setVolume(int trackId, float volumeInDb);
         void setWavetable(int trackId, Wavetable wavetable);
+        void setIsMuted(int trackId, bool muted);
 
     private:
         WavetableFactory m_wavetableFactory;

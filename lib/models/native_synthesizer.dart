@@ -53,4 +53,12 @@ class NativeSynthesizer {
       debugPrint("Failed to set wavetable: '${e.message}'.");
     }
   }
+
+  Future<void> setIsMuted(int trackId, bool isMuted) async {
+    try {
+      await _channel.invokeMethod('setIsMuted', {"trackId": trackId, "isMuted": isMuted});
+    } on PlatformException catch (e) {
+      debugPrint("Failed to set muted: '${e.message}'.");
+    }
+  }
 }

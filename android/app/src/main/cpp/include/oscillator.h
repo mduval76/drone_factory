@@ -22,6 +22,7 @@ namespace DroneFactory {
         void setFrequency(int trackId, float newFrequency);
         void setAmplitude(int trackId, float newAmplitude);
         void setWavetable(int trackId, const std::vector<float>& wavetable);
+        void setIsMuted(int trackId, bool isMuted);
 
     private:
         void generateTrackSamples(AudioTrack& track, float* outputBuffer, int numSamples, int trackIndex);

@@ -53,4 +53,8 @@ namespace DroneFactory {
     void Synthesizer::setWavetable(int trackId, Wavetable wavetable) {
         m_oscillator->setWavetable(trackId, m_wavetableFactory.getWavetable(wavetable));
     }
+
+    void Synthesizer::setIsMuted(int trackId, bool muted) {
+        m_oscillator->setIsMuted(trackId, muted);
+    }
 }
