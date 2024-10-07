@@ -231,6 +231,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
 
                       if (widget.selectedTrack.wavetable == Wavetable.none) {
                         widget.selectedTrack.isMuted = false;
+                        _setIsMuted(false);
                       }
                     });
                   },
