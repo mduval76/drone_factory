@@ -32,6 +32,7 @@ interface Synthesizer {
     suspend fun play()
     suspend fun stop()
     suspend fun isPlaying() : Boolean
+    suspend fun getOscilloscopeSamples() : FloatArray
     suspend fun setFrequency(trackId: Int, frequencyInHz: Float)
     suspend fun setVolume(trackId: Int, volumeInDb: Float)
     suspend fun setWavetable(trackId: Int, wavetable: Wavetable)

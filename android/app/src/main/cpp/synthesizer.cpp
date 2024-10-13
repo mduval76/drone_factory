@@ -40,7 +40,14 @@ namespace DroneFactory {
         m_isPlaying = false;
     }
 
-    void Synthesizer::setFrequency(int trackId, float frequencyInHz) {
+    std::vector<float> Synthesizer::getOscilloscopeSamples() {
+        // LOGD("SYNTHESIZER: getAudioSamples() called");
+        std::lock_guard<std::mutex> lock(m_mutex);
+        return m_oscillator->getOscilloscopeSamples();
+    }
+
+    void Synthesizer::setFrequency(int trackId, float frequencyInHz)
+    {
         // LOGD("SYNTHESIZER: Frequency set to %.2f Hz.", frequencyInHz);
         m_oscillator->setFrequency(trackId, frequencyInHz);
     }

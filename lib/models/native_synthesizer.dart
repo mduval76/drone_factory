@@ -30,6 +30,27 @@ class NativeSynthesizer {
     }
   }
 
+  Stream<List<double>> getOscilloscopeSamplesStream() async* {
+    while (true) {
+      final samples = await getOscilloscopeSamples();
+      yield samples.isNotEmpty ? samples : List.generate(100, (_) => 0.0);
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+  }
+
+  Future<List<double>> getOscilloscopeSamples() async {
+    try {
+      final samples = await _channel.invokeMethod<List<dynamic>>('getOscilloscopeSamples');
+      if (samples != null) {
+        return samples.cast<double>();
+      }
+      return [];
+    } on PlatformException catch (e) {
+      debugPrint("Failed to get audio samples: '${e.message}'.");
+      return [];
+    }
+  }
+
   Future<void> setFrequency(int trackId, double frequency) async {
     try {
       await _channel.invokeMethod('setFrequency', {"trackId": trackId, "frequency": frequency});

@@ -12,6 +12,7 @@ class NativeSynthesizer : Synthesizer {
     private external fun play(synthesizerHandle: Long)
     private external fun stop(synthesizerHandle: Long)
     private external fun isPlaying(synthesizerHandle: Long): Boolean
+    private external fun getOscilloscopeSamples(synthesizerHandle: Long): FloatArray
     private external fun setFrequency(synthesizerHandle: Long, trackId: Int, frequencyInHz: Float)
     private external fun setVolume(synthesizerHandle: Long, trackId: Int, amplitudeInDb: Float)
     private external fun setWavetable(synthesizerHandle: Long, trackId: Int, wavetable: Int)
@@ -41,6 +42,14 @@ class NativeSynthesizer : Synthesizer {
         synchronized(synthesizerMutex) {
             createNativeHandleIfNotExists()
             return@withContext isPlaying(synthesizerHandle)
+        }
+    }
+
+    override suspend fun getOscilloscopeSamples(): FloatArray = withContext(Dispatchers.Default) {
+        synchronized(synthesizerMutex) {
+            createNativeHandleIfNotExists()
+            val samples: FloatArray = getOscilloscopeSamples(synthesizerHandle)
+            return@withContext samples
         }
     }
 

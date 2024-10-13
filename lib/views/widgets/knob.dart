@@ -24,7 +24,7 @@ class Knob extends StatefulWidget {
 }
 
 class _KnobState extends State<Knob> {
-  final double radius = 12.55;
+  final double radius = 10;
   late double _cumulativeAngle = 0;
   late double _minAngle;
   late double _maxAngle;

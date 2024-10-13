@@ -76,6 +76,38 @@ extern "C" {
         return synthesizer->isPlaying();
     }
 
+    JNIEXPORT jfloatArray JNICALL
+    Java_u9343789_drone_1factory_NativeSynthesizer_getOscilloscopeSamples(JNIEnv* env, 
+                                                                   jobject thiz, 
+                                                                   jlong synthesizerHandle) 
+    {
+        auto* synthesizer = reinterpret_cast<DroneFactory::Synthesizer*>(synthesizerHandle);
+
+        if (not synthesizer) {
+            LOGD("Synthesizer not created. Please, create the synthesizer first by calling create().");
+            return nullptr;
+        }
+
+        const auto audioSamples = synthesizer->getOscilloscopeSamples();
+        const auto audioSamplesSize = audioSamples.size();
+
+        if (audioSamplesSize == 0) {
+            //LOGD("No oscilloscope samples available.");
+            return env->NewFloatArray(0); 
+        }
+
+        jfloatArray audioSamplesArray = env->NewFloatArray(audioSamplesSize);
+
+        if (audioSamplesArray == nullptr) {
+            LOGD("Failed to allocate memory for oscilloscope samples array.");
+            return nullptr;
+        }
+
+        env->SetFloatArrayRegion(audioSamplesArray, 0, audioSamplesSize, audioSamples.data());
+        
+        return audioSamplesArray;
+    }
+
     JNIEXPORT void JNICALL
     Java_u9343789_drone_1factory_NativeSynthesizer_setFrequency(JNIEnv* env, 
                                                                 jobject thiz, 

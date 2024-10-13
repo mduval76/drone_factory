@@ -19,11 +19,16 @@ namespace DroneFactory {
         std::memset(outputBuffer, 0, sizeof(float) * numSamples * CHANNEL_COUNT);
         std::vector<float> tempBuffer(numSamples * CHANNEL_COUNT, 0.0f);
 
+        m_visualizationBuffer.clear();
+        m_visualizationBuffer.resize(numSamples);
+
         for (int trackId = 0; trackId < NUM_TRACKS; ++trackId) {
             generateTrackSamples(*m_tracks[trackId], tempBuffer.data(), numSamples, trackId);
             for (int frame = 0; frame < numSamples; ++frame) {
                 outputBuffer[frame * CHANNEL_COUNT + 0] += tempBuffer[frame * CHANNEL_COUNT + 0];
                 outputBuffer[frame * CHANNEL_COUNT + 1] += tempBuffer[frame * CHANNEL_COUNT + 1];
+
+                m_visualizationBuffer[frame] = (outputBuffer[frame * CHANNEL_COUNT + 0] + outputBuffer[frame * CHANNEL_COUNT + 1]) / 2.0f;
             }
         }
 
@@ -63,7 +68,12 @@ namespace DroneFactory {
         }
     }
 
-    void Oscillator::setFrequency(int trackId, float newFrequency) {
+    std::vector<float> Oscillator::getOscilloscopeSamples() {
+        return m_visualizationBuffer;
+    }
+
+    void Oscillator::setFrequency(int trackId, float newFrequency)
+    {
         m_tracks[trackId]->setFrequency(newFrequency);
     }
 
