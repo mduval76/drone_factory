@@ -1,9 +1,11 @@
 import 'package:drone_factory/models/native_synthesizer.dart';
 import 'package:drone_factory/models/track_model.dart';
+import 'package:drone_factory/views/widgets/knob.dart';
 import 'package:drone_factory/views/widgets/track_frequency_control_widget.dart';
 import 'package:drone_factory/views/widgets/track_volume_control_widget.dart';
 import 'package:drone_factory/views/widgets/track_wavetable_selector_widget.dart';
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 class TrackControlsWidget extends StatefulWidget {
   final TrackModel selectedTrack;
@@ -24,6 +26,14 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
   late double _volume;
   late double _frequency;
   late Wavetable _wavetable;
+
+  @override
+  void initState() {
+    super.initState();
+    _volume = widget.selectedTrack.volume;
+    _frequency = widget.selectedTrack.frequency;
+    _wavetable = widget.selectedTrack.wavetable;
+  }
 
   void _setWavetable(int wavetable) async {
     await _synthesizer.setWavetable(widget.selectedTrack.trackId, _wavetable.index);
@@ -62,14 +72,6 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
 
   void _setVolume(double volume) async {
     await _synthesizer.setVolume(widget.selectedTrack.trackId, volume);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _volume = widget.selectedTrack.volume;
-    _frequency = widget.selectedTrack.frequency;
-    _wavetable = widget.selectedTrack.wavetable;
   }
 
   @override
@@ -215,6 +217,12 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
             },
           ),
           const Divider(thickness: 1, color: Colors.grey),
+          Knob(
+            startAngle: math.pi, 
+            minAngle: (0.9 * math.pi / 6), 
+            maxAngle: (10.9 * math.pi / 6), 
+            borderColor: widget.borderColor
+          ),
         ],
       ),
     );
