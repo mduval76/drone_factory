@@ -5,6 +5,8 @@ class Knob extends StatefulWidget {
   final double startAngle;
   final double minAngle;
   final double maxAngle;
+  final double minRange;
+  final double maxRange;
   final Color borderColor;
 
   const Knob({
@@ -12,6 +14,8 @@ class Knob extends StatefulWidget {
     required this.startAngle,
     required this.minAngle,
     required this.maxAngle,
+    required this.minRange,
+    required this.maxRange,
     required this.borderColor
     });
 
@@ -21,11 +25,11 @@ class Knob extends StatefulWidget {
 
 class _KnobState extends State<Knob> {
   final double radius = 12.55;
-  double _movement = 0;
-  double _cumulativeAngle = 0;
+  late double _cumulativeAngle = 0;
   late double _minAngle;
   late double _maxAngle;
   late double _startAngle;
+  late double _currentRangeValue;
 
   @override
   void initState() {
@@ -34,6 +38,7 @@ class _KnobState extends State<Knob> {
     _maxAngle = widget.maxAngle;
     _startAngle = widget.startAngle;
     _cumulativeAngle = _startAngle;
+    _currentRangeValue = (_angleToRange(_cumulativeAngle)).truncateToDouble();
   }
 
   @override
@@ -43,10 +48,19 @@ class _KnobState extends State<Knob> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            _movement > 0 ? 'Clockwise' : 'Counter-Clockwise',
-            style: const TextStyle(fontSize: 15, color: Colors.white),
+            'Angle: ${_cumulativeAngle.toStringAsFixed(3)}',
+            style : const TextStyle(
+              color: Colors.white,
+              fontSize: 12.5,
+            ),
           ),
-          Text('$_movement'),
+          Text(
+            'Range Value: ${_currentRangeValue.toStringAsFixed(3)}',
+            style : const TextStyle(
+              color: Colors.white,
+              fontSize: 12.5,
+            ),
+          ),
           const SizedBox(height: 20),
           GestureDetector(
             onPanUpdate: _panHandler,
@@ -81,6 +95,13 @@ class _KnobState extends State<Knob> {
     );
   }
 
+  double _angleToRange(double angle) {
+    return widget.minRange +
+        (angle - widget.minAngle) *
+            (widget.maxRange - widget.minRange) /
+            (widget.maxAngle - widget.minAngle);
+  }
+
   void _panHandler(DragUpdateDetails d) {
     bool onTop = d.localPosition.dy <= radius;
     bool onLeftSide = d.localPosition.dx <= radius;
@@ -106,9 +127,9 @@ class _KnobState extends State<Knob> {
     double rotationalChange = vert + horz;
 
     setState(() {
-      _movement = rotationalChange;
       _cumulativeAngle += (rotationalChange / 180) * math.pi;
       _cumulativeAngle = _cumulativeAngle.clamp(_minAngle, _maxAngle);
+      _currentRangeValue = _angleToRange(_cumulativeAngle);
     });
   }
 }

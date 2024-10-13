@@ -220,7 +220,9 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
           Knob(
             startAngle: math.pi, 
             minAngle: (0.9 * math.pi / 6), 
-            maxAngle: (10.9 * math.pi / 6), 
+            maxAngle: (10.9 * math.pi / 6),
+            minRange: -1.0,
+            maxRange: 1.0,
             borderColor: widget.borderColor
           ),
         ],
