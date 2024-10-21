@@ -7,15 +7,11 @@
 #include "audio_source.h"
 #include "audio_track.h"
 #include "low_pass_filter.h"
+#include "constants.h"
 
 namespace DroneFactory {
     class Oscillator : public AudioSource {
     public:
-        static constexpr int NUM_TRACKS = 8;
-        static constexpr int CHANNEL_COUNT = 2;
-        static constexpr int FILTER_ORDER = 101;
-        static constexpr int OVERSAMPLING_FACTOR = 4;
-
         Oscillator() = default;
         Oscillator(const std::vector<float>& wavetable, float frequency, float amplitude, float sampleRate);
 

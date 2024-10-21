@@ -34,11 +34,11 @@ namespace DroneFactory {
 
     // Position of the index in the wavetable
     float AudioTrack::getIndex() const {
-        return m_index;
+        return m_index.load(std::memory_order_relaxed);
     }
 
     void AudioTrack::setIndex(float index) {
-        m_index = index;
+        m_index.store(index, std::memory_order_relaxed);
     }
 
     // Index Increment (for frequency modulation)

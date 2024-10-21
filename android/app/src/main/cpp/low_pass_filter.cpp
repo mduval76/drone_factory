@@ -9,7 +9,8 @@ namespace DroneFactory {
         : m_filterOrder(filterOrder),
           m_cutoffFrequency(cutoffFrequency),
           m_oversamplingFactor(oversamplingFactor),
-          m_channelCount(channelCount) {
+          m_channelCount(channelCount),
+          m_prevSamples(channelCount) {
 
         computeFilterCoefficients();
 
@@ -30,20 +31,21 @@ namespace DroneFactory {
             int m = i - halfOrder;
             double h;
 
-            if (m == 0)
+            if (m == 0) {
                 h = 2 * fc;
-            else
+            }
+            else {
                 h = sin(2 * PI * fc * m) / (PI * m);
+            }
 
             // Blackman-Harris window
             const double a0 = 0.35875;
             const double a1 = 0.48829;
             const double a2 = 0.14128;
             const double a3 = 0.01168;
-            double w = a0
-                - a1 * cos(2 * PI * i / (m_filterOrder - 1))
-                + a2 * cos(4 * PI * i / (m_filterOrder - 1))
-                - a3 * cos(6 * PI * i / (m_filterOrder - 1));
+            double w = a0 - a1 * cos(2 * PI * i / (m_filterOrder - 1))
+                          + a2 * cos(4 * PI * i / (m_filterOrder - 1))
+                          - a3 * cos(6 * PI * i / (m_filterOrder - 1));
 
             m_filterCoeffs[i] = h * w;
             sum += m_filterCoeffs[i];
@@ -57,6 +59,13 @@ namespace DroneFactory {
 
     // Process the input buffer using the low-pass filter
     void LowPassFilter::process(float* buffer, int numSamples) {
+        if (m_shouldReset.load(std::memory_order_relaxed)) {
+            for (int ch = 0; ch < m_channelCount; ++ch) {
+                std::fill(m_prevSamples[ch].begin(), m_prevSamples[ch].end(), 0.0f);
+            }
+            m_shouldReset.store(false, std::memory_order_relaxed);
+        }
+
         int totalSamples = numSamples + m_filterOrder - 1;
         std::vector<float> tempBuffer(totalSamples * m_channelCount, 0.0f);
 
@@ -94,10 +103,8 @@ namespace DroneFactory {
     }
 
     void LowPassFilter::reset() {
-        // Clear previous samples for each channel
-        for (int ch = 0; ch < m_channelCount; ++ch) {
-            std::fill(m_prevSamples[ch].begin(), m_prevSamples[ch].end(), 0.0f);
-        }
+        // Set the flag to true to reset the filter
+        m_shouldReset.store(true, std::memory_order_relaxed);
     }
 
 }

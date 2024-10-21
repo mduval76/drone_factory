@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <vector>
 
 namespace DroneFactory {
@@ -20,7 +21,9 @@ namespace DroneFactory {
         const int m_channelCount;
 
         std::vector<double> m_filterCoeffs;
-        std::vector<float> m_prevSamples[2];
+        std::vector<std::vector<float>> m_prevSamples;
+
+        std::atomic<bool> m_shouldReset{false};
     };
 }
 

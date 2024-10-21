@@ -2,7 +2,6 @@
 #include <cstring> 
 
 #include "oscillator.h"
-#include "constants.h"
 #include "log.h"
 
 namespace DroneFactory {
