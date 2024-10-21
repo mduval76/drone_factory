@@ -25,7 +25,6 @@ namespace DroneFactory {
 
     private:
         void generateTrackSamples(AudioTrack& track, float* outputBuffer, int numSamples, int trackIndex);
-
         float m_sampleRate;
         
         std::array<std::shared_ptr<AudioTrack>, NUM_TRACKS> m_tracks;

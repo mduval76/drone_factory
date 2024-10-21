@@ -27,6 +27,17 @@ namespace DroneFactory {
         // Clear the output buffer
         std::memset(outputBuffer, 0, sizeof(float) * numSamples * CHANNEL_COUNT);
 
+        int activeTrackCount = 0;
+        for (int trackId = 0; trackId < NUM_TRACKS; ++trackId) {
+            if (!m_tracks[trackId]->isMuted() && !m_tracks[trackId]->getWavetable().empty()) {
+                ++activeTrackCount;
+            }
+        }
+
+        if (activeTrackCount == 0) {
+            return;
+        }
+
         // Generate samples for each track
         for (int trackId = 0; trackId < NUM_TRACKS; ++trackId) {
             generateTrackSamples(*m_tracks[trackId], tempBuffer.data(), oversampledSamples, trackId);
@@ -46,8 +57,11 @@ namespace DroneFactory {
             }
 
             // Add the oversampled samples to the output buffer
-            outputBuffer[i * CHANNEL_COUNT + 0] += tempBuffer[oversampledIndex + 0];
-            outputBuffer[i * CHANNEL_COUNT + 1] += tempBuffer[oversampledIndex + 1];
+            float sampleL = tempBuffer[oversampledIndex + 0] / static_cast<float>(activeTrackCount);
+            float sampleR = tempBuffer[oversampledIndex + 1] / static_cast<float>(activeTrackCount);
+
+            outputBuffer[i * CHANNEL_COUNT + 0] += sampleL;
+            outputBuffer[i * CHANNEL_COUNT + 1] += sampleR;
         }
 
         // Clamp the output buffer
