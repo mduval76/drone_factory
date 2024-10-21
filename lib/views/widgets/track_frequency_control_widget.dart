@@ -10,8 +10,8 @@ class TrackFrequencyControlWidget extends StatelessWidget {
   const TrackFrequencyControlWidget({
     super.key,
     required this.frequency,
-    this.minFrequency = 20.0,
-    this.maxFrequency = 2000.0,
+    this.minFrequency = 10.0,
+    this.maxFrequency = 500.0,
     required this.borderColor,
     required this.onFrequencyChanged,
   });

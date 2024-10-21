@@ -1,4 +1,5 @@
 #include "audio_track.h"
+#include "log.h"
 
 namespace DroneFactory {
 
@@ -11,7 +12,8 @@ namespace DroneFactory {
 
     void AudioTrack::setFrequency(float frequency) {
         m_frequency.store(frequency);
-        m_indexIncrement = frequency * static_cast<float>(m_wavetable.size()) / m_sampleRate;
+        m_indexIncrement.store(frequency * static_cast<float>(m_wavetable.size()) / m_sampleRate);
+        LOGD("SetFrequency: Frequency=%f, IndexIncrement=%f", frequency, m_indexIncrement.load());
     }
 
     float AudioTrack::getAmplitude() const {
@@ -45,7 +47,7 @@ namespace DroneFactory {
     }
 
     void AudioTrack::setIndexIncrement(float increment) {
-        m_indexIncrement = increment;
+        m_indexIncrement.store(increment);
     }
 
     bool AudioTrack::isMuted() const {

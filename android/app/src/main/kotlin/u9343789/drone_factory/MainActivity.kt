@@ -53,7 +53,7 @@ class MainActivity: FlutterActivity() {
                 }
                 "setFrequency" -> {
                     val trackId = call.argument<Int>("trackId") ?: 0
-                    val frequency = call.argument<Double>("frequency")?.toFloat() ?: 440f
+                    val frequency = call.argument<Double>("frequency")?.toFloat() ?: 110f
                     Log.d("Synth", "Setting frequency to $frequency for track $trackId")
                     CoroutineScope(Dispatchers.Main).launch {
                         try {

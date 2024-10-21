@@ -15,12 +15,12 @@ class SynthesizerViewModel : ViewModel() {
         applyParameters(0)
     }
 
-    private val _frequency = MutableLiveData(440f)
+    private val _frequency = MutableLiveData(110f)
     val frequency: LiveData<Float>
     get() {
         return _frequency
     }
-    private val frequencyRange = 20f..500f
+    private val frequencyRange = 10f..500f
     
     private val _volume = MutableLiveData(0f)
     val volume: LiveData<Float>

@@ -32,11 +32,11 @@ namespace DroneFactory {
 
         std::atomic<float> m_frequency;
         std::atomic<float> m_amplitude;
+        std::atomic<float> m_indexIncrement{0.f};
 
         std::vector<float> m_wavetable;
 
         float m_index{0.f};
-        float m_indexIncrement{0.f};
         float m_sampleRate;
     };
 }

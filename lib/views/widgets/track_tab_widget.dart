@@ -25,8 +25,7 @@ class _TrackTabWidgetState extends State<TrackTabWidget> {
     super.initState();
     _color = widget.color;
   }
-  //TODO: Implement lower opacity background color for active tracks
-  //TODO: Implement muted grey background color for muted tracks
+  
   @override
   Widget build(BuildContext context) {
     bool isSelected = widget.trackModel.trackId == widget.selectedTrackIndex;
