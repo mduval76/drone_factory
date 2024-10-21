@@ -11,6 +11,7 @@ add_library(
     oscillator.cpp
     wavetable_factory.cpp
     oboe_audio_player.cpp
+    low_pass_filter.cpp
 )
 
 include_directories(

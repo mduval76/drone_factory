@@ -7,15 +7,13 @@
 
 namespace DroneFactory {
     Oscillator::Oscillator(const std::vector<float>& wavetable, float frequency, float amplitude, float sampleRate)
-        : m_sampleRate(sampleRate * OVERSAMPLING_FACTOR) {
+        : m_sampleRate(sampleRate * OVERSAMPLING_FACTOR),
+          m_lowPassFilter(FILTER_ORDER, 1.0 / OVERSAMPLING_FACTOR, OVERSAMPLING_FACTOR, CHANNEL_COUNT) {
+
             for (int i = 0; i < NUM_TRACKS; ++i) {
                 m_tracks[i] = std::make_shared<AudioTrack>(m_sampleRate, wavetable);
                 m_tracks[i]->setFrequency(frequency);
                 m_tracks[i]->setAmplitude(amplitude);
-            }
-
-            for (int ch = 0; ch < CHANNEL_COUNT; ++ch) {
-                m_prevSamples[ch].resize(FILTER_ORDER - 1, 0.0f);
             }
 
             LOGD("Wavetable size: %zu", wavetable.size());
@@ -32,7 +30,7 @@ namespace DroneFactory {
         }
 
         // Apply low-pass filter to the oversampled data
-        applyLowPassFilter(tempBuffer.data(), oversampledSamples);
+        m_lowPassFilter.process(tempBuffer.data(), oversampledSamples);
 
         // Downsample and write to outputBuffer
         for (int i = 0; i < numSamples; ++i) {
@@ -40,10 +38,9 @@ namespace DroneFactory {
 
             if (oversampledIndex + (CHANNEL_COUNT - 1) >= tempBuffer.size()) {
                 LOGD("Oversampled index out of bounds: %d", oversampledIndex);
-                continue; // Avoid out-of-bounds access
+                continue;
             }
 
-            // Downsample by picking every Nth sample after filtering
             outputBuffer[i * CHANNEL_COUNT + 0] += tempBuffer[oversampledIndex + 0];
             outputBuffer[i * CHANNEL_COUNT + 1] += tempBuffer[oversampledIndex + 1];
         }
@@ -76,83 +73,6 @@ namespace DroneFactory {
 
             outputBuffer[i * CHANNEL_COUNT + 0] += sample;
             outputBuffer[i * CHANNEL_COUNT + 1] += sample;
-        }
-    }
-
-    void Oscillator::applyLowPassFilter(float *buffer, int numSamples) {
-        static std::vector<double> filterCoeffs;
-        static bool coeffsComputed = false;
-
-        if (!coeffsComputed) {
-            filterCoeffs.resize(FILTER_ORDER);
-            computeFilterCoefficients(filterCoeffs);
-            coeffsComputed = true;
-        }
-
-        std::vector<float> tempBuffer((numSamples + FILTER_ORDER - 1) * CHANNEL_COUNT, 0.0f);
-
-        for (int ch = 0; ch < CHANNEL_COUNT; ++ch) {
-            for (int i = 0; i < FILTER_ORDER - 1; ++i) {
-                tempBuffer[i * CHANNEL_COUNT + ch] = m_prevSamples[ch][i];
-            }
-        }
-
-        for (int i = 0; i < numSamples; ++i) {
-            for (int ch = 0; ch < CHANNEL_COUNT; ++ch) {
-                tempBuffer[(i + FILTER_ORDER - 1) * CHANNEL_COUNT + ch] = buffer[i * CHANNEL_COUNT + ch];
-            }
-        }
-
-        for (int ch = 0; ch < CHANNEL_COUNT; ++ch) {
-            for (int i = 0; i < numSamples; ++i) {
-                double acc = 0.0;
-                for (int j = 0; j < FILTER_ORDER; ++j) {
-                    acc += tempBuffer[(i + j) * CHANNEL_COUNT + ch] * filterCoeffs[j];
-                }
-                buffer[i * CHANNEL_COUNT + ch] = static_cast<float>(acc);
-            }
-        }
-
-        for (int ch = 0; ch < CHANNEL_COUNT; ++ch) {
-            for (int i = 0; i < FILTER_ORDER - 1; ++i) {
-                m_prevSamples[ch][i] = tempBuffer[(numSamples + i) * CHANNEL_COUNT + ch];
-            }
-        }
-    }
-
-    void Oscillator::computeFilterCoefficients(std::vector<double>& coeffs) {
-        double sum = 0.0;
-        double fc = 1.0 / OVERSAMPLING_FACTOR; // Normalized cutoff frequency
-
-        const int filterOrder = FILTER_ORDER;
-        const int halfOrder = (filterOrder - 1) / 2;
-
-        for (int i = 0; i < filterOrder; ++i) {
-            int m = i - halfOrder;
-            double h;
-
-            if (m == 0)
-                h = 2 * fc;
-            else
-                h = sin(2 * M_PI * fc * m) / (M_PI * m);
-
-            // Apply a Blackman-Harris window
-            const double a0 = 0.35875;
-            const double a1 = 0.48829;
-            const double a2 = 0.14128;
-            const double a3 = 0.01168;
-            double w = a0
-                - a1 * cos(2 * M_PI * i / (filterOrder - 1))
-                + a2 * cos(4 * M_PI * i / (filterOrder - 1))
-                - a3 * cos(6 * M_PI * i / (filterOrder - 1));
-
-            coeffs[i] = h * w;
-            sum += coeffs[i];
-        }
-
-        // Normalize filter coefficients
-        for (int i = 0; i < filterOrder; ++i) {
-            coeffs[i] /= sum;
         }
     }
 
