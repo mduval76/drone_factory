@@ -5,7 +5,6 @@
 #include "constants.h"
 
 namespace DroneFactory {
-
     LowPassFilter::LowPassFilter(int filterOrder, double cutoffFrequency, int oversamplingFactor, int channelCount)
         : m_filterOrder(filterOrder),
           m_cutoffFrequency(cutoffFrequency),
@@ -20,6 +19,7 @@ namespace DroneFactory {
         }
     }
 
+    // Compute filter coefficients using the Blackman-Harris window
     void LowPassFilter::computeFilterCoefficients() {
         m_filterCoeffs.resize(m_filterOrder);
         double sum = 0.0;
@@ -35,7 +35,7 @@ namespace DroneFactory {
             else
                 h = sin(2 * PI * fc * m) / (PI * m);
 
-            // Apply a Blackman-Harris window
+            // Blackman-Harris window
             const double a0 = 0.35875;
             const double a1 = 0.48829;
             const double a2 = 0.14128;
@@ -55,25 +55,26 @@ namespace DroneFactory {
         }
     }
 
+    // Process the input buffer using the low-pass filter
     void LowPassFilter::process(float* buffer, int numSamples) {
         int totalSamples = numSamples + m_filterOrder - 1;
         std::vector<float> tempBuffer(totalSamples * m_channelCount, 0.0f);
 
-        // Copy previous samples into tempBuffer for each channel
+        // Previous samples + current buffer
         for (int ch = 0; ch < m_channelCount; ++ch) {
             for (int i = 0; i < m_filterOrder - 1; ++i) {
                 tempBuffer[i * m_channelCount + ch] = m_prevSamples[ch][i];
             }
         }
 
-        // Copy current buffer into tempBuffer starting at position m_filterOrder - 1
+        // Copying input buffer to tempBuffer
         for (int i = 0; i < numSamples; ++i) {
             for (int ch = 0; ch < m_channelCount; ++ch) {
                 tempBuffer[(i + m_filterOrder - 1) * m_channelCount + ch] = buffer[i * m_channelCount + ch];
             }
         }
 
-        // Perform convolution
+        // Convolution of the input buffer with the filter coefficients
         for (int ch = 0; ch < m_channelCount; ++ch) {
             for (int i = 0; i < numSamples; ++i) {
                 double acc = 0.0;
@@ -84,7 +85,7 @@ namespace DroneFactory {
             }
         }
 
-        // Save last m_filterOrder - 1 samples for next buffer
+        // Updating previous samples for the next iteration
         for (int ch = 0; ch < m_channelCount; ++ch) {
             for (int i = 0; i < m_filterOrder - 1; ++i) {
                 m_prevSamples[ch][i] = tempBuffer[(numSamples + i) * m_channelCount + ch];
@@ -93,7 +94,7 @@ namespace DroneFactory {
     }
 
     void LowPassFilter::reset() {
-        // Reset previous samples
+        // Clear previous samples for each channel
         for (int ch = 0; ch < m_channelCount; ++ch) {
             std::fill(m_prevSamples[ch].begin(), m_prevSamples[ch].end(), 0.0f);
         }
