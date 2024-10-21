@@ -27,6 +27,7 @@ namespace DroneFactory {
         // Clear the output buffer
         std::memset(outputBuffer, 0, sizeof(float) * numSamples * CHANNEL_COUNT);
 
+        // Determine active tracks count
         int activeTrackCount = 0;
         for (int trackId = 0; trackId < NUM_TRACKS; ++trackId) {
             if (!m_tracks[trackId]->isMuted() && !m_tracks[trackId]->getWavetable().empty()) {
@@ -50,37 +51,39 @@ namespace DroneFactory {
         for (int i = 0; i < numSamples; ++i) {
             int oversampledIndex = i * OVERSAMPLING_FACTOR * CHANNEL_COUNT;
 
-            // Check if the oversampled index is out of bounds
+            // Check if oversampled index is out of bounds
             if (oversampledIndex + (CHANNEL_COUNT - 1) >= tempBuffer.size()) {
                 LOGD("Oversampled index out of bounds: %d", oversampledIndex);
                 continue;
             }
 
-            // Add the oversampled samples to the output buffer
+            // Average samples
             float sampleL = tempBuffer[oversampledIndex + 0] / static_cast<float>(activeTrackCount);
             float sampleR = tempBuffer[oversampledIndex + 1] / static_cast<float>(activeTrackCount);
 
+            // Add samples to output buffer
             outputBuffer[i * CHANNEL_COUNT + 0] += sampleL;
             outputBuffer[i * CHANNEL_COUNT + 1] += sampleR;
         }
 
-        // Clamp the output buffer
+        // Clamp output buffer
         for (int i = 0; i < numSamples * CHANNEL_COUNT; ++i) {
             outputBuffer[i] = std::clamp(outputBuffer[i], -1.0f, 1.0f);
         }
     }
 
-    // Generate samples for a single track
+    // Generate samples for single track
     void Oscillator::generateTrackSamples(AudioTrack &track, float *outputBuffer, int numSamples, int trackIndex) {
         if (track.isMuted()) {
             return;
         }
 
-        // Generate samples for the track
+        // Sample generation
         for (int i = 0; i < numSamples; ++i) {
             float index = track.getIndex();
-            index = std::fmod(index, static_cast<float>(track.getWavetable().size()));
 
+            // Wrap index
+            index = std::fmod(index, static_cast<float>(track.getWavetable().size()));
             const auto& wavetable = track.getWavetable();
             const auto truncatedIndex = static_cast<int>(index);
             const auto nextIndex = (truncatedIndex + 1u) % wavetable.size();
@@ -89,9 +92,13 @@ namespace DroneFactory {
             // Linear interpolation
             float sample = wavetable[truncatedIndex] * (1.f - nextIndexWeight) + wavetable[nextIndex] * nextIndexWeight;
 
+            // Apply amplitude
             sample *= track.getAmplitude();
 
+            // Increment index
             track.setIndex(index + track.getIndexIncrement());
+
+            // Add sample to output buffer
             outputBuffer[i * CHANNEL_COUNT + 0] += sample;
             outputBuffer[i * CHANNEL_COUNT + 1] += sample;
         }
