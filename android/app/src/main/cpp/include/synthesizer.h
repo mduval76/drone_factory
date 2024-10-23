@@ -28,6 +28,8 @@ namespace DroneFactory {
         void setWavetable(int trackId, Wavetable wavetable);
         void setIsMuted(int trackId, bool muted);
 
+        std::vector<float> getVisualizationSamples();
+
     private:
         WavetableFactory m_wavetableFactory;
         

@@ -16,6 +16,7 @@ class NativeSynthesizer : Synthesizer {
     private external fun setVolume(synthesizerHandle: Long, trackId: Int, amplitudeInDb: Float)
     private external fun setWavetable(synthesizerHandle: Long, trackId: Int, wavetable: Int)
     private external fun setIsMuted(synthesizerHandle: Long, trackId: Int, isMuted: Boolean)
+    private external fun getVisualizationData(synthesizerHandle: Long): FloatArray?
 
     companion object {
         init {
@@ -69,6 +70,13 @@ class NativeSynthesizer : Synthesizer {
         synchronized(synthesizerMutex) {
             createNativeHandleIfNotExists()
             setIsMuted(synthesizerHandle, trackId, isMuted)
+        }
+    }
+
+    override suspend fun getVisualizationData(): FloatArray? = withContext(Dispatchers.Default) {
+        synchronized(synthesizerMutex) {
+            createNativeHandleIfNotExists()
+            return@withContext getVisualizationData(synthesizerHandle)
         }
     }
 

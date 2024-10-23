@@ -7,8 +7,6 @@
 
 namespace DroneFactory {
     namespace {
-        constexpr auto WAVETABLE_LENGTH = 1024;
-
         std::vector<float> generateSineWavetable() {
             auto sineWavetable = std::vector<float>(WAVETABLE_LENGTH);
 

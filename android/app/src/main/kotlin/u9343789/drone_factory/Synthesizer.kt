@@ -36,4 +36,5 @@ interface Synthesizer {
     suspend fun setVolume(trackId: Int, volumeInDb: Float)
     suspend fun setWavetable(trackId: Int, wavetable: Wavetable)
     suspend fun setIsMuted(trackId: Int, isMuted: Boolean)
+    suspend fun getVisualizationData() : FloatArray?
 }

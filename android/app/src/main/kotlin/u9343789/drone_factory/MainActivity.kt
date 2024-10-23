@@ -107,6 +107,17 @@ class MainActivity: FlutterActivity() {
                         }
                     }
                 }
+                "getVisualizationData" -> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        try {
+                            val visualizationData = nativeSynthesizer.getVisualizationData()
+                            result.success(visualizationData?.toList())
+                        } 
+                        catch (e: Exception) {
+                            result.error("ERROR", "Failed to get visualization data", e.localizedMessage)
+                        }
+                    }
+                }
                 else -> result.notImplemented()
             }
         }}

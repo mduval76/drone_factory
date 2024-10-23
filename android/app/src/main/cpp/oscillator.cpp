@@ -1,5 +1,5 @@
 #include <cmath>
-#include <cstring> 
+#include <cstring>
 
 #include "oscillator.h"
 #include "log.h"
@@ -7,17 +7,17 @@
 namespace DroneFactory {
     Oscillator::Oscillator(const std::vector<float>& wavetable, float frequency, float amplitude, float sampleRate)
         : m_sampleRate(sampleRate * OVERSAMPLING_FACTOR),
-          m_lowPassFilter(FILTER_ORDER, 1.0 / OVERSAMPLING_FACTOR, OVERSAMPLING_FACTOR, CHANNEL_COUNT) {
-
-            for (int i = 0; i < NUM_TRACKS; ++i) {
-                m_tracks[i] = std::make_shared<AudioTrack>(m_sampleRate, wavetable);
-                m_tracks[i]->setFrequency(frequency);
-                m_tracks[i]->setAmplitude(amplitude);
-            }
-
-            LOGD("Wavetable size: %zu", wavetable.size());
+          m_lowPassFilter(FILTER_ORDER, 1.0 / OVERSAMPLING_FACTOR, OVERSAMPLING_FACTOR, CHANNEL_COUNT),
+          m_visualizationBuffer(MAX_BUFFER_SIZE, 0.0f)
+    {
+        for (int i = 0; i < NUM_TRACKS; ++i) {
+            m_tracks[i] = std::make_shared<AudioTrack>(m_sampleRate, wavetable);
+            m_tracks[i]->setFrequency(frequency);
+            m_tracks[i]->setAmplitude(amplitude);
         }
-
+        LOGD("Wavetable size: %zu", wavetable.size());
+    }
+    
     // Get the samples for the oscillator with oversampling
     void Oscillator::getSamples(float* outputBuffer, int numSamples) {
         // Oversample the outputBuffer
@@ -61,6 +61,15 @@ namespace DroneFactory {
             float sampleL = tempBuffer[oversampledIndex + 0] / static_cast<float>(activeTrackCount);
             float sampleR = tempBuffer[oversampledIndex + 1] / static_cast<float>(activeTrackCount);
 
+            {
+                //std::lock_guard<std::mutex> lock(m_visualizationBufferMutex);
+                m_visualizationBuffer.insert(m_visualizationBuffer.end(), {sampleL, sampleR});
+                if (m_visualizationBuffer.size() > MAX_BUFFER_SIZE) {
+                    m_visualizationBuffer.erase(m_visualizationBuffer.begin(), 
+                    m_visualizationBuffer.begin() + (m_visualizationBuffer.size() - MAX_BUFFER_SIZE));
+                }
+            }
+            
             // Add samples to output buffer
             outputBuffer[i * CHANNEL_COUNT + 0] += sampleL;
             outputBuffer[i * CHANNEL_COUNT + 1] += sampleR;
@@ -108,6 +117,11 @@ namespace DroneFactory {
         for (auto& track : m_tracks) {
             track->setIndex(0.f);
         }
+    }
+
+    std::vector<float> Oscillator::getVisualizationSamples() {
+        std::lock_guard<std::mutex> lock(m_visualizationBufferMutex);
+        return m_visualizationBuffer;
     }
 
     void Oscillator::setFrequency(int trackId, float newFrequency) {

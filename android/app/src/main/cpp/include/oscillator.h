@@ -3,6 +3,7 @@
 #include <vector>
 #include <array>
 #include <memory>
+#include <mutex>
 
 #include "audio_source.h"
 #include "audio_track.h"
@@ -17,6 +18,7 @@ namespace DroneFactory {
 
         void getSamples(float* outputBuffer, int numSamples) override;
         void onPlaybackStopped() override;
+        std::vector<float> getVisualizationSamples();
 
         void setFrequency(int trackId, float newFrequency);
         void setAmplitude(int trackId, float newAmplitude);
@@ -30,5 +32,10 @@ namespace DroneFactory {
         std::array<std::shared_ptr<AudioTrack>, NUM_TRACKS> m_tracks;
 
         LowPassFilter m_lowPassFilter;
+
+        std::vector<float> m_visualizationBuffer;
+        std::mutex m_visualizationBufferMutex;
+        static const int MAX_BUFFER_SIZE = 512;
+        const int DOWNSAMPLING_FACTOR = 735;
     };
 }

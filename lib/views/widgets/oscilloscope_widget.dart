@@ -1,3 +1,5 @@
+import 'package:drone_factory/models/native_synthesizer.dart';
+import 'package:drone_factory/views/widgets/oscilloscope_painter.dart';
 import 'package:flutter/material.dart';
 
 class OscilloscopeWidget extends StatefulWidget {
@@ -8,17 +10,30 @@ class OscilloscopeWidget extends StatefulWidget {
 }
 
 class _OscilloscopeWidgetState extends State<OscilloscopeWidget> {
+  final NativeSynthesizer _synthesizer = NativeSynthesizer();
+  List<double>? _waveformData;
+
+  @override
+  void initState() {
+    super.initState();
+    _getVisualizationData();
+  }
+
+  Future<void> _getVisualizationData() async {
+    while (true) {
+      final data = await _synthesizer.getVisualizationData();
+      setState(() {
+        _waveformData = data;
+      });
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-        'Oscilloscope',
-        style: TextStyle(
-          color: Colors.lightGreen,
-          fontSize: 20,
-          fontFamily: 'CocomatLight',
-          fontWeight: FontWeight.bold
-        ),
-      );
+    return CustomPaint(
+      painter: OscilloscopePainter(_waveformData),
+      size: Size.infinite,
+    );
   }
 }

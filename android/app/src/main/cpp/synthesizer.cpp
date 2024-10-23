@@ -57,4 +57,9 @@ namespace DroneFactory {
     void Synthesizer::setIsMuted(int trackId, bool muted) {
         m_oscillator->setIsMuted(trackId, muted);
     }
+
+    std::vector<float> Synthesizer::getVisualizationSamples() {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        return m_oscillator->getVisualizationSamples(); 
+    }
 }

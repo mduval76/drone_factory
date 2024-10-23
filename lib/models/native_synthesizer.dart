@@ -61,4 +61,14 @@ class NativeSynthesizer {
       debugPrint("Failed to set muted: '${e.message}'.");
     }
   }
+
+  Future<List<double>?> getVisualizationData() async {
+    try {
+      final List<dynamic>? result = await _channel.invokeMethod('getVisualizationData');
+      return result?.cast<double>();
+    } on PlatformException catch (e) {
+      debugPrint("Failed to fetch visualization data: '${e.message}'.");
+      return null;
+    }
+  }
 }

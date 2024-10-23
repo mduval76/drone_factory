@@ -147,4 +147,28 @@ extern "C" {
             LOGD("Synthesizer not created. Please, create the synthesizer first by calling create().");
         }
     }
+
+    JNIEXPORT jfloatArray JNICALL
+    Java_u9343789_drone_1factory_NativeSynthesizer_getVisualizationData(JNIEnv* env,
+                                                                        jobject thiz,
+                                                                        jlong synthesizerHandle) 
+    {
+        auto* synthesizer = reinterpret_cast<DroneFactory::Synthesizer*>(synthesizerHandle);
+
+        if (!synthesizer) {
+            LOGD("Synthesizer not created. Please, create the synthesizer first by calling create().");
+            return nullptr;
+        }
+
+        std::vector<float> samples = synthesizer->getVisualizationSamples();
+        jfloatArray result = env->NewFloatArray(samples.size());
+
+        if (!result) {
+            LOGD("Failed to create float array for visualization data.");
+            return nullptr;
+        }
+        
+        env->SetFloatArrayRegion(result, 0, samples.size(), samples.data());
+        return result;
+    }
 }

@@ -7,4 +7,6 @@ namespace DroneFactory {
     static const auto CHANNEL_COUNT = 2;
     static const auto FILTER_ORDER = 201;
     static const auto OVERSAMPLING_FACTOR = 4;
+    static const auto WAVETABLE_LENGTH = 1024;
+    static const auto DOWNSAMPLING_FACTOR = 10;
 }
