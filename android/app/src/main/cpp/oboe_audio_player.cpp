@@ -15,20 +15,20 @@ namespace DroneFactory {
     OboeAudioPlayer::OboeAudioPlayer(std::shared_ptr<AudioSource> source, int sampleRate)
         : m_source(std::move(source)), m_sampleRate(sampleRate) {
 #ifndef NDEBUG
-        LOGD("OboeAudioPlayer created. Instances count: %d", ++instances);
+        //LOGD("OboeAudioPlayer created. Instances count: %d", ++instances);
 #endif
     }
 
     OboeAudioPlayer::~OboeAudioPlayer() {
 #ifndef NDEBUG
-        LOGD("OboeAudioPlayer destroyed. Instances count: %d", --instances);
+        //LOGD("OboeAudioPlayer destroyed. Instances count: %d", --instances);
 #endif
         OboeAudioPlayer::stop();
     }
 
     int32_t OboeAudioPlayer::play() {
 #ifndef NDEBUG
-        LOGD("OboeAudioPlayer::play()");
+        //LOGD("OboeAudioPlayer::play()");
 #endif
         AudioStreamBuilder builder;
         const auto result =
@@ -53,7 +53,7 @@ namespace DroneFactory {
 
     void OboeAudioPlayer::stop() {
 #ifndef NDEBUG
-        LOGD("OboeAudioPlayer::stop()");
+        //LOGD("OboeAudioPlayer::stop()");
 #endif
         if (m_stream) {
             m_stream->stop();

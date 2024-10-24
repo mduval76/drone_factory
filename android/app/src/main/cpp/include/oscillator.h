@@ -13,7 +13,7 @@
 namespace DroneFactory {
     class Oscillator : public AudioSource {
     public:
-        Oscillator() = default;
+        //Oscillator() = default;
         Oscillator(const std::vector<float>& wavetable, float frequency, float amplitude, float sampleRate);
 
         void getSamples(float* outputBuffer, int numSamples) override;
@@ -35,7 +35,5 @@ namespace DroneFactory {
 
         std::vector<float> m_visualizationBuffer;
         std::mutex m_visualizationBufferMutex;
-        static const int MAX_BUFFER_SIZE = 512;
-        const int DOWNSAMPLING_FACTOR = 735;
     };
 }

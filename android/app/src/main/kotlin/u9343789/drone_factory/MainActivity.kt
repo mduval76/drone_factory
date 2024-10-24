@@ -54,7 +54,7 @@ class MainActivity: FlutterActivity() {
                 "setFrequency" -> {
                     val trackId = call.argument<Int>("trackId") ?: 0
                     val frequency = call.argument<Double>("frequency")?.toFloat() ?: 110f
-                    Log.d("Synth", "Setting frequency to $frequency for track $trackId")
+                    //Log.d("Synth", "Setting frequency to $frequency for track $trackId")
                     CoroutineScope(Dispatchers.Main).launch {
                         try {
                             nativeSynthesizer.setFrequency(trackId, frequency)
@@ -69,7 +69,7 @@ class MainActivity: FlutterActivity() {
                     val trackId = call.argument<Int>("trackId") ?: 0
                     val volume = call.argument<Double>("volume")?.toFloat() ?: 0f
                     val volumeInDb = volume * 60 - 60
-                    Log.d("Synth", "Setting volume to $volume for track $trackId")
+                    //Log.d("Synth", "Setting volume to $volume for track $trackId")
                     CoroutineScope(Dispatchers.Main).launch {
                         try {
                             nativeSynthesizer.setVolume(trackId, volumeInDb)

@@ -13,7 +13,7 @@ namespace DroneFactory {
     void AudioTrack::setFrequency(float frequency) {
         m_frequency.store(frequency);
         m_indexIncrement.store(frequency * static_cast<float>(m_wavetable.size()) / m_sampleRate);
-        LOGD("SetFrequency: Frequency=%f, IndexIncrement=%f", frequency, m_indexIncrement.load());
+        //LOGD("SetFrequency: Frequency=%f, IndexIncrement=%f", frequency, m_indexIncrement.load());
     }
 
     float AudioTrack::getAmplitude() const {

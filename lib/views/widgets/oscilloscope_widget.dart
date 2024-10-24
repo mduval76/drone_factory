@@ -1,5 +1,5 @@
 import 'package:drone_factory/models/native_synthesizer.dart';
-import 'package:drone_factory/views/widgets/oscilloscope_painter.dart';
+import 'package:drone_factory/utils/oscilloscope_painter.dart';
 import 'package:flutter/material.dart';
 
 class OscilloscopeWidget extends StatefulWidget {

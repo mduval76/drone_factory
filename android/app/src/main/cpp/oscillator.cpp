@@ -8,7 +8,7 @@ namespace DroneFactory {
     Oscillator::Oscillator(const std::vector<float>& wavetable, float frequency, float amplitude, float sampleRate)
         : m_sampleRate(sampleRate * OVERSAMPLING_FACTOR),
           m_lowPassFilter(FILTER_ORDER, 1.0 / OVERSAMPLING_FACTOR, OVERSAMPLING_FACTOR, CHANNEL_COUNT),
-          m_visualizationBuffer(MAX_BUFFER_SIZE, 0.0f)
+          m_visualizationBuffer(BUFFER_SIZE)
     {
         for (int i = 0; i < NUM_TRACKS; ++i) {
             m_tracks[i] = std::make_shared<AudioTrack>(m_sampleRate, wavetable);
@@ -47,6 +47,9 @@ namespace DroneFactory {
         // Apply low pass filter
         m_lowPassFilter.process(tempBuffer.data(), oversampledSamples);
 
+        std::vector<float> tempVisualizationBuffer;
+        tempVisualizationBuffer.reserve(numSamples * CHANNEL_COUNT);
+
         // Downsample the outputBuffer
         for (int i = 0; i < numSamples; ++i) {
             int oversampledIndex = i * OVERSAMPLING_FACTOR * CHANNEL_COUNT;
@@ -61,18 +64,25 @@ namespace DroneFactory {
             float sampleL = tempBuffer[oversampledIndex + 0] / static_cast<float>(activeTrackCount);
             float sampleR = tempBuffer[oversampledIndex + 1] / static_cast<float>(activeTrackCount);
 
-            {
-                //std::lock_guard<std::mutex> lock(m_visualizationBufferMutex);
-                m_visualizationBuffer.insert(m_visualizationBuffer.end(), {sampleL, sampleR});
-                if (m_visualizationBuffer.size() > MAX_BUFFER_SIZE) {
-                    m_visualizationBuffer.erase(m_visualizationBuffer.begin(), 
-                    m_visualizationBuffer.begin() + (m_visualizationBuffer.size() - MAX_BUFFER_SIZE));
-                }
-            }
+            tempVisualizationBuffer.push_back(sampleL);
+            tempVisualizationBuffer.push_back(sampleR);
             
             // Add samples to output buffer
             outputBuffer[i * CHANNEL_COUNT + 0] += sampleL;
             outputBuffer[i * CHANNEL_COUNT + 1] += sampleR;
+        }
+
+        {
+            std::lock_guard<std::mutex> lock(m_visualizationBufferMutex);
+            m_visualizationBuffer.insert(
+                m_visualizationBuffer.end(), 
+                tempVisualizationBuffer.begin(), 
+                tempVisualizationBuffer.end());
+
+            if (m_visualizationBuffer.size() > BUFFER_SIZE) {
+                m_visualizationBuffer.erase(m_visualizationBuffer.begin(),
+                m_visualizationBuffer.begin() + (m_visualizationBuffer.size() - BUFFER_SIZE));
+            }
         }
 
         // Clamp output buffer
