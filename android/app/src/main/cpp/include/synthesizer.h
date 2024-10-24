@@ -34,7 +34,8 @@ namespace DroneFactory {
         WavetableFactory m_wavetableFactory;
         
         std::atomic<bool> m_isPlaying{false};
-        std::mutex m_mutex;
+        std::mutex m_waveMutex;
+        std::mutex m_oscilloscopeMutex;
         std::shared_ptr<Oscillator> m_oscillator;
         std::unique_ptr<AudioPlayer> m_audioPlayer;
     };

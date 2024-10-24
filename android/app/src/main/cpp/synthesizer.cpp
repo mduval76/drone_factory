@@ -23,7 +23,7 @@ namespace DroneFactory {
 
     void Synthesizer::play() {
         // LOGD("SYNTHESIZER: play() called");
-        std::lock_guard<std::mutex> lock{m_mutex};
+        std::lock_guard<std::mutex> lock{m_waveMutex};
         const auto result = m_audioPlayer->play();
         if (result == 0) {
             m_isPlaying = true;
@@ -35,7 +35,7 @@ namespace DroneFactory {
 
     void Synthesizer::stop() {
         // LOGD("SYNTHESIZER: stop() called");
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_waveMutex);
         m_audioPlayer->stop();
         m_isPlaying = false;
     }
@@ -59,7 +59,7 @@ namespace DroneFactory {
     }
 
     std::vector<float> Synthesizer::getVisualizationSamples() {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_waveMutex);
         return m_oscillator->getVisualizationSamples(); 
     }
 }

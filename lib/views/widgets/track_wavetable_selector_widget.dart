@@ -39,7 +39,8 @@ class TrackWavetableSelectorWidget extends StatelessWidget {
               assetName = 'assets/icons/none.svg';
               break;
           }
-          return Container(
+          return Expanded(
+            child: Container(
             decoration: BoxDecoration(
               color: Colors.transparent,
               border: Border(
@@ -60,6 +61,7 @@ class TrackWavetableSelectorWidget extends StatelessWidget {
                 },
               ),
             ),
+          )
           );
         }).toList(),
       ),

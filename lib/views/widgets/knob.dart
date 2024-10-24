@@ -47,20 +47,20 @@ class _KnobState extends State<Knob> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            'Angle: ${_cumulativeAngle.toStringAsFixed(3)}',
-            style : const TextStyle(
-              color: Colors.white,
-              fontSize: 12.5,
-            ),
-          ),
-          Text(
-            'Range Value: ${_currentRangeValue.toStringAsFixed(3)}',
-            style : const TextStyle(
-              color: Colors.white,
-              fontSize: 12.5,
-            ),
-          ),
+          // Text(
+          //   'Angle: ${_cumulativeAngle.toStringAsFixed(3)}',
+          //   style : const TextStyle(
+          //     color: Colors.white,
+          //     fontSize: 12.5,
+          //   ),
+          // ),
+          // Text(
+          //   'Range Value: ${_currentRangeValue.toStringAsFixed(3)}',
+          //   style : const TextStyle(
+          //     color: Colors.white,
+          //     fontSize: 12.5,
+          //   ),
+          // ),
           const SizedBox(height: 20),
           GestureDetector(
             onPanUpdate: _panHandler,

@@ -84,7 +84,7 @@ class _MainVolumeWidgetState extends State<MainVolumeWidget> with SingleTickerPr
               builder: (context, child) {
                 return Container(
                   height: _leftChannelVolumeAnimation.value * 0.25 * currentWidgetHeight,
-                  width: 18,
+                  width: 15,
                   color: Colors.white,
                 );
               },
@@ -95,7 +95,7 @@ class _MainVolumeWidgetState extends State<MainVolumeWidget> with SingleTickerPr
               builder: (context, child) {
                 return Container(
                   height: _rightChannelVolumeAnimation.value * 0.25 * currentWidgetHeight,
-                  width: 18,
+                  width: 15,
                   color: Colors.white,
                 );
               },

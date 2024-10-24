@@ -73,7 +73,7 @@ class _TrackTabWidgetState extends State<TrackTabWidget> {
                   '${widget.trackModel.trackId + 1}',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 25.0,
+                      fontSize: 20.0,
                     ),
                   ),
                 )

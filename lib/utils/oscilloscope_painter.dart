@@ -44,7 +44,7 @@ class OscilloscopePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(OscilloscopePainter oldDelegate) {
-    // return true;
-    return oldDelegate.waveformData != waveformData;
+    return true;
+    // return oldDelegate.waveformData != waveformData;
   }
 }

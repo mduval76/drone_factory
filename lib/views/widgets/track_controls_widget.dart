@@ -107,7 +107,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                 'Track ${widget.selectedTrack.trackId + 1}',
                 style: TextStyle(
                   color: widget.borderColor,
-                  fontSize: 20,
+                  fontSize: 15,
                   fontFamily: 'QuicksandRegular',
                   fontWeight: FontWeight.bold
                 )
@@ -120,7 +120,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(0.0)),
                     ),
-                    minimumSize: const Size(20, 20),
+                    minimumSize: const Size(15, 15),
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -135,7 +135,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
                     'M',
                     style: TextStyle(
                       color: widget.selectedTrack.isMuted ? Colors.black : widget.borderColor,
-                      fontSize: 15,
+                      fontSize: 10,
                       fontFamily: 'QuicksandRegular',
                       fontWeight: FontWeight.bold
                     )
@@ -149,7 +149,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
             'Wavetable: ${_getWavetableString(_wavetable)}',
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 15,
+              fontSize: 10,
               fontFamily: 'QuicksandRegular',
               fontWeight: FontWeight.bold
             )
@@ -177,7 +177,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
             'Frequency: ${_frequency.toStringAsFixed(3)}',
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 15,
+              fontSize: 10,
               fontFamily: 'QuicksandRegular',
               fontWeight: FontWeight.bold
             )
@@ -199,7 +199,7 @@ class _TrackControlsWidgetState extends State<TrackControlsWidget> {
             'Volume: ${_volume.toStringAsFixed(3)}',
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 15,
+              fontSize: 10,
               fontFamily: 'QuicksandRegular',
               fontWeight: FontWeight.bold
             )
