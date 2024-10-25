@@ -99,13 +99,13 @@ class SynthesizerViewModel : ViewModel() {
     }
 
     private fun volumeInDbFromSliderPosition(sliderPosition: Float): Float {
-        val rangePosition = sliderPosition
-        return valueFromRangePosition(volumeRange, sliderPosition)
+        val rangePosition = linearToExponential(sliderPosition)
+        return valueFromRangePosition(volumeRange, rangePosition)
     }
-
+    
     fun sliderPositionFromVolumeInDb(volumeInDb: Float): Float {
         val rangePosition = rangePositionFromValue(volumeRange, volumeInDb)
-        return rangePositionFromValue(volumeRange, volumeInDb)
+        return exponentialToLinear(rangePosition)
     }
 
     companion object LinearToExponentialConverter {
@@ -119,6 +119,14 @@ class SynthesizerViewModel : ViewModel() {
             return exp(ln(MINIMUM_VALUE) - ln(MINIMUM_VALUE) * value)
         }
     
+        fun exponentialToLinear(rangePosition: Float): Float {
+            assert(rangePosition in 0f..1f)
+            if (rangePosition < MINIMUM_VALUE) {
+                return rangePosition
+            }
+            return (ln(rangePosition) - ln(MINIMUM_VALUE)) / (-ln(MINIMUM_VALUE))
+        }
+    
         fun valueFromRangePosition(range: ClosedFloatingPointRange<Float>, rangePosition: Float): Float {
             assert(rangePosition in 0f..1f)
             return range.start + (range.endInclusive - range.start) * rangePosition
@@ -128,15 +136,6 @@ class SynthesizerViewModel : ViewModel() {
         fun rangePositionFromValue(range: ClosedFloatingPointRange<Float>, value: Float): Float {
             assert(value in range)
             return (value - range.start) / (range.endInclusive - range.start)
-        }
-    
-    
-        fun exponentialToLinear(rangePosition: Float): Float {
-            assert(rangePosition in 0f..1f)
-            if (rangePosition < MINIMUM_VALUE) {
-                return rangePosition
-            }
-            return (ln(rangePosition) - ln(MINIMUM_VALUE)) / (-ln(MINIMUM_VALUE))
         }
     }
 

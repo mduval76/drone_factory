@@ -16,7 +16,7 @@ class MainApp extends StatelessWidget {
           backgroundColor: Colors.black,
           titleTextStyle: TextStyle(
             color: Colors.amber,
-            fontSize: 30,
+            fontSize: 20,
             fontFamily: 'CocomatLight',
             fontWeight: FontWeight.bold
           ),
